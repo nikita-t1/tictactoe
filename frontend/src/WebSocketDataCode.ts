@@ -1,0 +1,15 @@
+enum WebSocketDataCode {
+
+    STATUS_OK = 4000,
+    SECOND_PLAYER_CONNECTED = 4001,
+    MOVE_ACCEPTED = 4002,
+    YOUR_MOVE = 4003,
+    OPPONENT_MOVE = 4004,
+    GAME_BOARD = 4005,
+    NOT_YOUR_TURN = 4010,
+    GAME_CODE_TIMEOUT_REACHED = 4501,
+    GAME_ALREADY_HAS_TWO_PLAYERS = 4502
+
+}
+
+export default WebSocketDataCode
