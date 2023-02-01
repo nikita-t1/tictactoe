@@ -10,6 +10,13 @@ data class Game(
     var secondPlayer: Player? = null,
 ) {
     val gameBoard: GameBoard = GameBoard()
+    var awaitMoveByPlayer: Player? = firstPlayer
+
+    fun getOpponent(player: Player): Player? {
+        if (player == firstPlayer) return secondPlayer
+        if (player == secondPlayer) return firstPlayer
+        return null
+    }
 
     companion object {
         val games = Collections.synchronizedSet<Game>(LinkedHashSet())
