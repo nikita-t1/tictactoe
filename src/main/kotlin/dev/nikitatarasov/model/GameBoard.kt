@@ -4,6 +4,12 @@ class GameBoard {
 
     private var gamefield: List<MutableList<PlayerSymbol>> = List(3) { MutableList(3) { PlayerSymbol.UNSET } }
 
+    fun setSymbol(player: Player, index: Int){
+        val row = (index-1)/3
+        val col = (index-1)%3
+        gamefield[row][col] = player.symbol
+    }
+
     override fun toString(): String {
         var str = ""
         gamefield.forEach { row ->
