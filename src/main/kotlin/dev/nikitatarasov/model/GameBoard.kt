@@ -12,5 +12,21 @@ class GameBoard {
         return str
     }
 
+    fun toJSON(): String {
+        return """
+            {
+                "one": "${gamefield[0][0].fieldToSymbol()}",
+                "two": "${gamefield[0][1].fieldToSymbol()}",
+                "three": "${gamefield[0][2].fieldToSymbol()}",
+                "four": "${gamefield[1][0].fieldToSymbol()}",
+                "five": "${gamefield[1][1].fieldToSymbol()}",
+                "six": "${gamefield[1][2].fieldToSymbol()}",
+                "seven": "${gamefield[2][0].fieldToSymbol()}",
+                "eight": "${gamefield[2][1].fieldToSymbol()}",
+                "nine": "${gamefield[2][2].fieldToSymbol()}"
+            }
+        """.trimIndent()
+    }
+
 
 }
