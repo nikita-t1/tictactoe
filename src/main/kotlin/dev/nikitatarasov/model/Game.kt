@@ -6,16 +6,23 @@ import kotlin.random.Random
 
 data class Game(
     val id: String = randomGameId(),
-    val firstPlayer: Player? = null,
-    var secondPlayer: Player? = null,
+    val firstPlayer: Player = Player(symbol = PlayerSymbol.CROSS),
+    var secondPlayer: Player = Player(symbol = PlayerSymbol.NOUGHT),
 ) {
     val gameBoard: GameBoard = GameBoard()
-    var awaitMoveByPlayer: Player? = firstPlayer
+    var awaitMoveByPlayer: Player = firstPlayer
+    val players = listOf(firstPlayer, secondPlayer)
 
-    fun getOpponent(player: Player): Player? {
-        if (player == firstPlayer) return secondPlayer
-        if (player == secondPlayer) return firstPlayer
-        return null
+    fun hasGameWinner(): Player? {
+        return gameBoard.hasGameWinner(firstPlayer!!, secondPlayer!!)
+    }
+
+    fun getOpponent(player: Player): Player {
+        return if (player == firstPlayer) {
+            secondPlayer
+        } else {
+            firstPlayer
+        }
     }
 
     companion object {
