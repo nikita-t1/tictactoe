@@ -1,11 +1,16 @@
 package dev.nikitatarasov.model
 
 import io.ktor.server.websocket.*
-import io.ktor.websocket.DefaultWebSocketSession
 import java.util.*
 
-data class Player(val id: UUID = UUID.randomUUID(), val symbol: PlayerSymbol, val session: DefaultWebSocketServerSession) {
+data class Player(
+    val id: UUID = UUID.randomUUID(),
+    val symbol: PlayerSymbol,
+//    val session: DefaultWebSocketServerSession
+) {
+    var session: DefaultWebSocketServerSession? = null
 
+    fun isReady(): Boolean = session != null
 }
 
 enum class PlayerSymbol {
