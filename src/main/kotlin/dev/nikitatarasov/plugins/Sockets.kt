@@ -71,15 +71,34 @@ fun Application.configureSockets() {
                                 game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
                                 game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
 
-                        game.awaitMoveByPlayer!!.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
-                    } else {
-                        println("ignore")
-                        // Ignore
+                            } else {
+                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_INVALID))
+                            }
+
+                            val winner = game.hasGameWinner()
+                            println("winner $winner")
+                            if (winner != null){
+                                if (winner == game.firstPlayer){
+                                    println("first player won")
+                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON))
+                                    game.secondPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON))
+                                } else if (winner == game.secondPlayer){
+                                    println("second player won")
+                                    game.secondPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON))
+                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON))
+                                }
+
+                                // game close
+                                game.firstPlayer.session!!.close()
+                                game.secondPlayer.session!!.close()
+                                return@webSocket
+                            }
+                        } else {
+                            game.getOpponent(game.awaitMoveByPlayer!!)!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NOT_YOUR_TURN))
+                            println("ignore")
+                            // Ignore
+                        }
                     }
-//                    outgoing.send(Frame.Text("YOU SAID: $text"))
-//                    if (text.equals("bye", ignoreCase = true)) {
-//                        close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-//                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
