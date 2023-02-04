@@ -1,8 +1,6 @@
 package dev.nikitatarasov.plugins
 
-import dev.nikitatarasov.model.Game
-import dev.nikitatarasov.model.Player
-import dev.nikitatarasov.model.PlayerSymbol
+import dev.nikitatarasov.Controller
 import dev.nikitatarasov.model.WebSocketDataCode
 import io.ktor.serialization.kotlinx.*
 import io.ktor.server.websocket.*
@@ -10,10 +8,7 @@ import io.ktor.websocket.*
 import java.time.Duration
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import java.util.*
-import kotlin.collections.LinkedHashSet
 
 fun Application.configureSockets() {
     install(WebSockets) {
@@ -25,62 +20,56 @@ fun Application.configureSockets() {
     }
     routing {
         webSocket("/ws") { // websocketSession
-            val gameCode = call.request.queryParameters["gameCode"]
-            if (gameCode.isNullOrBlank()) {
-                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                return@webSocket
-            }
-            val game: Game
-            val player: Player
-
-            val foundGame = Controller.games.find { it.id == gameCode }
-            if (foundGame == null) {
-                player = Player(symbol = PlayerSymbol.CROSS, session = this)
-                game = Game(id = gameCode, firstPlayer = player)
-                Controller.games.add(game)
-                val timeout = System.currentTimeMillis() + (1000 * 60 * 5) // 5 min
-                delay(5000)
-                while (game.secondPlayer == null) {
-                    delay(100)
-                    if (System.currentTimeMillis() > timeout){
-                        Controller.games.remove(game)
-                        sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_CODE_TIMEOUT_REACHED))
-                        close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                        return@webSocket
-                    }
-                }
-                sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.SECOND_PLAYER_CONNECTED))
-            } else {
-                if (foundGame.secondPlayer != null){
-                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_ALREADY_HAS_TWO_PLAYERS))
-                    close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+            try {
+                println("connect")
+                val gameCode = call.request.queryParameters["gameCode"]
+                if (gameCode.isNullOrBlank()) {
+                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_GAMECODE))
+                    close()
                     return@webSocket
                 }
-                player = Player(symbol = PlayerSymbol.NOUGHT, session = this)
-                foundGame.secondPlayer = player
-                game = foundGame
-                sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.STATUS_OK))
-            }
 
-            val opponent: Player? = game.getOpponent(player)
-            if (opponent == null){
-                sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_SECOND_PLAYER_YET))
-                close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                return@webSocket
-            }
+                val game = Controller.findGame(gameCode) ?: Controller.createGame(gameCode)
 
-            game.firstPlayer!!.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
-            game.firstPlayer.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
+                if (game.firstPlayer.isReady().not()) {
+                    game.firstPlayer.session = this
+                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_SECOND_PLAYER_YET))
+                    if (Controller.awaitSecondPlayer(game).not()) {
+                        sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_CODE_TIMEOUT_REACHED))
+                        close()
+                        return@webSocket
+                    }
+                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.SECOND_PLAYER_CONNECTED))
 
-            for (frame in incoming) {
-                if (frame is Frame.Text) {
-                    val text = frame.readText()
-                    if (this == game.awaitMoveByPlayer!!.session){
-                        game.gameBoard.setSymbol(game.awaitMoveByPlayer!!, text.toInt())
-                        game.awaitMoveByPlayer!!.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_ACCEPTED))
+                } else {
+                    println("here")
+                    if (game.secondPlayer.isReady()){
+                        sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_ALREADY_HAS_TWO_PLAYERS))
+                        close()
+                        return@webSocket
+                    }
 
-                        game.awaitMoveByPlayer!!.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
-                        game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer!!)
+                    game.secondPlayer.session = this
+                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.STATUS_OK))
+                }
+
+                game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
+                game.secondPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
+
+                for (frame in incoming) {
+                    if (frame is Frame.Text) {
+                        val text = frame.readText()
+
+                        // If Move comes from expected Player
+                        if (this == game.awaitMoveByPlayer.session){
+                            val isValidMove = game.gameBoard.setSymbol(game.awaitMoveByPlayer, text.toInt())
+                            if (isValidMove){
+                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_ACCEPTED))
+                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
+                                game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
+                                game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer!!)
+                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
+                                game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
 
                         game.awaitMoveByPlayer!!.session.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
                     } else {
@@ -92,13 +81,15 @@ fun Application.configureSockets() {
 //                        close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
 //                    }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                println("finally")
             }
+
         }
     }
 }
 
-object Controller {
 
-    val games: MutableSet<Game> = Collections.synchronizedSet<Game>(LinkedHashSet())
 
-}
