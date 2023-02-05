@@ -1,12 +1,12 @@
 FROM node:19-alpine as node
 # Source -> Dest
-COPY --chown=gradle:gradle . project
+COPY --chown=gradle:gradle . /project
 WORKDIR /project/frontend
 RUN npm install
 RUN npm run build
 
 FROM gradle:7-jdk11 AS build
-COPY --chown=gradle:gradle . project
+COPY --chown=gradle:gradle . /project
 COPY --from=node /project/frontend/dist /project/src/main/resources/dist
 WORKDIR /project
 RUN GRADLE_OPTS='-Dkotlin.daemon.jvm.options=-Xmx1024m'
@@ -17,3 +17,4 @@ EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /project/build/libs/fat.jar /app/fat.jar
 ENTRYPOINT ["java","-jar","/app/fat.jar"]
+
