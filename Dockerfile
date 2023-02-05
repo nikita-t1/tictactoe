@@ -6,7 +6,8 @@ RUN npm install
 RUN npm run build
 
 FROM gradle:7-jdk11 AS build
-COPY --from=node /project /project
+COPY --chown=gradle:gradle . project
+COPY --from=node /project/frontend/dist /project/src/main/resources/dist
 WORKDIR /project
 RUN GRADLE_OPTS='-Dkotlin.daemon.jvm.options=-Xmx1024m'
 RUN gradle buildFatJar --no-daemon
