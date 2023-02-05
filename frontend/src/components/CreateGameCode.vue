@@ -29,15 +29,18 @@ import {ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
 import WebSocketDataCode from "@/WebSocketDataCode";
+import {getBaseURL, getBaseURLWithProtocol} from "@/getBaseURL";
 
 const gameCode = ref("----")
 
 function requestGameCode() {
-  axios.post("http://127.0.0.1:8080/create-game-code")
+  axios.defaults.baseURL = getBaseURLWithProtocol()
+  console.log(axios.defaults.baseURL)
+  axios.post("/create-game-code")
       .then((response) => {
         gameCode.value = response.data
 
-        const ws = new WebSocket("ws://127.0.0.1:8080/ws?gameCode=" + gameCode.value);
+        const ws = new WebSocket(`ws://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
         useWebSocketStore().ws = ws
 
         ws.onmessage = (event) => {

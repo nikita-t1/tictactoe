@@ -26,12 +26,13 @@ import {ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
 import webSocketDataCode from "@/WebSocketDataCode";
+import {getBaseURL} from "@/getBaseURL";
 
 const gameCode = ref("")
 
 function startGame(){
 
-  const ws = new WebSocket("ws://127.0.0.1:8080/ws?gameCode=" + gameCode.value);
+  const ws = new WebSocket(`ws://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
   useWebSocketStore().ws = ws
 
   ws.onmessage = (event) => {
