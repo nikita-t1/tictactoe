@@ -18,6 +18,7 @@ const router = createRouter({
     },
     {
       path: '/start',
+      alias: "/",
       name: 'start',
       component: StartView
     },
