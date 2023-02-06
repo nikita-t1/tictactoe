@@ -4,15 +4,11 @@ function getBaseURL(): string{
         // In Prod both backend and frontend share the same host + port
         baseUrl = location.host
     }
-    console.log(baseUrl)
     return baseUrl
 }
 
 function getBaseURLWithProtocol(): string{
-    if (import.meta.env.PROD) { // https://vitejs.dev/guide/env-and-mode.html
-        return `https://${getBaseURL()}`
-    }
-    return `http://${getBaseURL()}`
+    return `${location.protocol}//${getBaseURL()}`
 }
 
 export {getBaseURL, getBaseURLWithProtocol}

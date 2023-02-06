@@ -39,8 +39,8 @@ function requestGameCode() {
   axios.post("/create-game-code")
       .then((response) => {
         gameCode.value = response.data
-
-        const ws = new WebSocket(`ws://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
+        const protocol = location.protocol == 'https:' ? "wss" : "ws"
+        const ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
         useWebSocketStore().ws = ws
 
         ws.onmessage = (event) => {
