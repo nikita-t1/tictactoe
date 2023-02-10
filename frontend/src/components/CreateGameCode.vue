@@ -1,7 +1,9 @@
 <template>
   <div>
-    <div class="transition-all duration-700 flex flex-col w-96 h-80 bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
-      <div class="transition-all duration-700 bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700">
+    <div
+        class="transition-all duration-700 flex flex-col w-96 h-80 bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
+      <div
+          class="transition-all duration-700 bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700">
         <p class="transition-all duration-700 mt-1 text-sm text-gray-500 dark:text-gray-500">
           Player 1
         </p>
@@ -15,7 +17,7 @@
         </p>
         <a class="transition-all duration-700 flex-none mt-3 mx-auto w-full inline-flex items-center gap-2 mt-5 text-sm font-medium text-blue-500 hover:text-blue-700">
           <button type="button" @click="requestGameCode"
-            class="py-[.688rem] px-4 mx-auto w-full inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
+                  class="py-[.688rem] px-4 mx-auto w-full inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
             Create Game Code
           </button>
         </a>
@@ -23,7 +25,8 @@
     </div>
 
     <div :class="msg !== '' ? 'visible opacity-100' : 'invisible opacity-0'" class="transition-all duration-1000">
-      <div class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
+      <div
+          class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
         <div
             class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
             role="status" aria-label="loading">
@@ -47,6 +50,7 @@ import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
 import WebSocketDataCode from "@/WebSocketDataCode";
 import {getBaseURL, getBaseURLWithProtocol} from "@/getBaseURL";
+import WebSocketMsg from "@/WebSocketMsg";
 
 const gameCode = ref("----")
 const msg = ref("")
@@ -64,25 +68,12 @@ function requestGameCode() {
         ws.onmessage = (event) => {
           console.log(event.data)
           const webSocketData = JSON.parse(event.data)
-          switch (parseInt(webSocketData.statusCode)) {
+          msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
 
-            case WebSocketDataCode.GAME_CODE_TIMEOUT_REACHED:
-              msg.value = "GAME_CODE_TIMEOUT_REACHED"
-              break
-            case WebSocketDataCode.NO_SECOND_PLAYER_YET:
-              msg.value = "NO_SECOND_PLAYER_YET"
-              break
-            case WebSocketDataCode.GAME_ALREADY_HAS_TWO_PLAYERS:
-              msg.value = "GAME_ALREADY_HAS_TWO_PLAYERS"
-              break
-            case WebSocketDataCode.SECOND_PLAYER_CONNECTED:
-              msg.value = "Second Player Connected"
-              router.push({path: "/play", query: {gameCode: gameCode.value}})
-              break
-            case WebSocketDataCode.OPPONENT_MOVE:
-              msg.value = "It's your Opponent's Move"
-              break
+          if (webSocketData.statusCode == WebSocketDataCode.SECOND_PLAYER_CONNECTED) {
+            router.push({path: "/play", query: {gameCode: gameCode.value}})
           }
+
         }
       })
 }
