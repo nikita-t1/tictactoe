@@ -43,12 +43,12 @@ class GameBoard {
             // | |x| |
             // | |x| |
             // | |x| |
-            else if ( gamefield[0][1].equalsAll(gamefield[1][1], gamefield[2][1]) ) winningSymbol = gamefield[1][0]
+            else if ( gamefield[0][1].equalsAll(gamefield[1][1], gamefield[2][1]) ) winningSymbol = gamefield[0][1]
 
             // | | |x|
             // | | |x|
             // | | |x|
-            else if ( gamefield[0][2].equalsAll(gamefield[1][2], gamefield[2][2]) ) winningSymbol = gamefield[2][0]
+            else if ( gamefield[0][2].equalsAll(gamefield[1][2], gamefield[2][2]) ) winningSymbol = gamefield[0][2]
 
             // |x| | |
             // | |x| |
