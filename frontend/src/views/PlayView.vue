@@ -2,15 +2,15 @@
   <div class="flex flex-col h-screen items-center justify-center mx-auto">
     <div class=" max-w-4xl  space-x-8 space-y-4">
       <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-        <div class="field" @click="sendWebSocketData(1)">{{one}}</div>
-        <div class="field" @click="sendWebSocketData(2)">{{two}}</div>
-        <div class="field" @click="sendWebSocketData(3)">{{three}}</div>
-        <div class="field" @click="sendWebSocketData(4)">{{four}}</div>
-        <div class="field" @click="sendWebSocketData(5)">{{five}}</div>
-        <div class="field" @click="sendWebSocketData(6)">{{six}}</div>
-        <div class="field" @click="sendWebSocketData(7)">{{seven}}</div>
-        <div class="field" @click="sendWebSocketData(8)">{{eight}}</div>
-        <div class="field" @click="sendWebSocketData(9)">{{nine}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(1)">{{one}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(2)">{{two}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(3)">{{three}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(4)">{{four}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(5)">{{five}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(6)">{{six}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(7)">{{seven}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(8)">{{eight}}</div>
+        <div class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(9)">{{nine}}</div>
       </div>
     </div>
 
@@ -31,6 +31,7 @@
 import {useWebSocketStore} from "@/stores/websocket";
 import {onMounted, ref} from "vue";
 import WebSocketDataCode from "@/WebSocketDataCode";
+import WebSocketMsg from "@/WebSocketMsg";
 
 const one = ref("")
 const two = ref("")
@@ -42,7 +43,8 @@ const seven = ref("")
 const eight = ref("")
 const nine = ref("")
 
-const msg = ref("test")
+const msg = ref("What have you expected to see?")
+const isMyMove = ref(false)
 
 onMounted(() => {
   startWebSocketListener()
@@ -62,10 +64,12 @@ function startWebSocketListener(){
         msg.value = "Status OK"
         break
       case WebSocketDataCode.YOUR_MOVE:
-        msg.value = "It's Your Move"
+        msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
+          isMyMove.value = true
         break
       case WebSocketDataCode.OPPONENT_MOVE:
         msg.value = "It's your Opponent's Move"
+        isMyMove.value = false
         break
       case WebSocketDataCode.MOVE_INVALID:
         msg.value = "Move is not valid"
@@ -81,6 +85,7 @@ function startWebSocketListener(){
         break
 
     }
+    msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
 
     if (webSocketData.statusCode == WebSocketDataCode.GAME_BOARD){
       const gameBoard =JSON.parse(webSocketData.msg)
