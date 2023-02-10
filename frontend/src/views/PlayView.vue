@@ -1,18 +1,26 @@
 <template>
-  <div class="flex flex-col max-w-4xl content-center self-center items-center justify-center mx-auto space-x-8 space-y-4 h-screen">
-    <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-      <div class="field" @click="sendWebSocketData(1)">{{one}}</div>
-      <div class="field" @click="sendWebSocketData(2)">{{two}}</div>
-      <div class="field" @click="sendWebSocketData(3)">{{three}}</div>
-      <div class="field" @click="sendWebSocketData(4)">{{four}}</div>
-      <div class="field" @click="sendWebSocketData(5)">{{five}}</div>
-      <div class="field" @click="sendWebSocketData(6)">{{six}}</div>
-      <div class="field" @click="sendWebSocketData(7)">{{seven}}</div>
-      <div class="field" @click="sendWebSocketData(8)">{{eight}}</div>
-      <div class="field" @click="sendWebSocketData(9)">{{nine}}</div>
+  <div class="flex flex-col h-screen items-center justify-center mx-auto">
+    <div class=" max-w-4xl  space-x-8 space-y-4">
+      <div class="grid gap-x-4 gap-y-4 grid-cols-3">
+        <div class="field" @click="sendWebSocketData(1)">{{one}}</div>
+        <div class="field" @click="sendWebSocketData(2)">{{two}}</div>
+        <div class="field" @click="sendWebSocketData(3)">{{three}}</div>
+        <div class="field" @click="sendWebSocketData(4)">{{four}}</div>
+        <div class="field" @click="sendWebSocketData(5)">{{five}}</div>
+        <div class="field" @click="sendWebSocketData(6)">{{six}}</div>
+        <div class="field" @click="sendWebSocketData(7)">{{seven}}</div>
+        <div class="field" @click="sendWebSocketData(8)">{{eight}}</div>
+        <div class="field" @click="sendWebSocketData(9)">{{nine}}</div>
+      </div>
     </div>
-    <div class="font-mono bg-green-500 text-amber-900">{{ msg }}</div>
+
+    <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
+        <span class="transition-all duration-700 text-gray-800 dark:text-white">
+        {{ msg }}
+      </span>
+    </div>
   </div>
+
 
 
 </template>
@@ -107,7 +115,7 @@ function startWebSocketListener(){
 
 <style scoped>
 .field {
-  @apply bg-red-200 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl cursor-pointer
+  @apply transition-all duration-700 bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
 }
 
 </style>
