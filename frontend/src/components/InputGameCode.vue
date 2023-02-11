@@ -46,9 +46,8 @@
 import {onMounted, onRenderTracked, onRenderTriggered, ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
-import webSocketDataCode from "@/WebSocketDataCode";
 import {getBaseURL} from "@/getBaseURL";
-import WebSocketMsg from "@/WebSocketMsg";
+import {MessageMap, WebSocketDataCode} from "@/WebSocketDataCode";
 
 const gameCode = ref("")
 const msg = ref("")
@@ -69,9 +68,9 @@ function startGame(){
   ws.onmessage = (event) => {
     console.log(event.data)
     const webSocketData = JSON.parse(event.data)
-    msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
+    msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
-    if (webSocketData.statusCode == webSocketDataCode.STATUS_OK) {
+    if (webSocketData.statusCode == WebSocketDataCode.STATUS_OK) {
       router.push({path: "/play", query: {gameCode: gameCode.value}})
     }
 

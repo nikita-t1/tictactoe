@@ -48,9 +48,8 @@ import axios, {isCancel, AxiosError} from 'axios';
 import {ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
-import WebSocketDataCode from "@/WebSocketDataCode";
 import {getBaseURL, getBaseURLWithProtocol} from "@/getBaseURL";
-import WebSocketMsg from "@/WebSocketMsg";
+import {WebSocketDataCode, MessageMap} from "@/WebSocketDataCode";
 
 const gameCode = ref("----")
 const msg = ref("")
@@ -68,7 +67,7 @@ function requestGameCode() {
         ws.onmessage = (event) => {
           console.log(event.data)
           const webSocketData = JSON.parse(event.data)
-          msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
+          msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
           if (webSocketData.statusCode == WebSocketDataCode.SECOND_PLAYER_CONNECTED) {
             router.push({path: "/play", query: {gameCode: gameCode.value}})

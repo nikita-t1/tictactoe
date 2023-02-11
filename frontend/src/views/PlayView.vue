@@ -30,8 +30,7 @@
 
 import {useWebSocketStore} from "@/stores/websocket";
 import {onMounted, ref} from "vue";
-import WebSocketDataCode from "@/WebSocketDataCode";
-import WebSocketMsg from "@/WebSocketMsg";
+import {MessageMap, WebSocketDataCode} from "@/WebSocketDataCode";
 
 const one = ref("")
 const two = ref("")
@@ -64,7 +63,7 @@ function startWebSocketListener(){
         msg.value = "Status OK"
         break
       case WebSocketDataCode.YOUR_MOVE:
-        msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
+        msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
           isMyMove.value = true
         break
       case WebSocketDataCode.OPPONENT_MOVE:
@@ -85,7 +84,7 @@ function startWebSocketListener(){
         break
 
     }
-    msg.value = WebSocketMsg.get(parseInt(webSocketData.statusCode))
+    msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
     if (webSocketData.statusCode == WebSocketDataCode.GAME_BOARD){
       const gameBoard =JSON.parse(webSocketData.msg)
@@ -120,7 +119,7 @@ function startWebSocketListener(){
 
 <style scoped>
 .field {
-  @apply transition-all duration-700 bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
+  @apply transition-all duration-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
 }
 
 </style>

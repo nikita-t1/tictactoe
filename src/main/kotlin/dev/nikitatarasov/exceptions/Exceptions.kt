@@ -5,7 +5,7 @@ import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusC
 
 class NoGameCodeException(
     message: String? = "No GameCode was provided as Query Parameter, but one is required",
-    webSocketDataCode: StatusCode = StatusCode.NO_GAMECODE
+    webSocketDataCode: StatusCode = StatusCode.NO_GAMECODE_IN_QUERY
 ) : WebSocketException(message, webSocketDataCode)
 
 class TimeoutSecondPlayerException(
