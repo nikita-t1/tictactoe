@@ -2,6 +2,8 @@ package dev.nikitatarasov
 
 import dev.nikitatarasov.model.Game
 import kotlinx.coroutines.delay
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
@@ -23,6 +25,16 @@ object Controller {
         val game = Game(gameCode)
         games.add(game)
         return game
+    }
+
+    fun removeExpiredGames(expirationTime: Int = 60){
+        // Coroutine?
+        getAllGames()
+            ?.filter { ChronoUnit.MINUTES.between(it.creationTime, LocalDateTime.now()) >= expirationTime }
+            ?.forEach {
+                println("Remove Game Code: ${it.id}")
+                removeGame(it)
+            }
     }
 
     suspend inline fun awaitSecondPlayer(game: Game): Boolean {
