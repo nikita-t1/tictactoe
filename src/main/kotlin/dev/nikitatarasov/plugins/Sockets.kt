@@ -1,7 +1,12 @@
 package dev.nikitatarasov.plugins
 
 import dev.nikitatarasov.Controller
+import dev.nikitatarasov.exceptions.GameLobbyIsFullException
+import dev.nikitatarasov.exceptions.NoGameCodeException
+import dev.nikitatarasov.exceptions.TimeoutSecondPlayerException
+import dev.nikitatarasov.exceptions.WebSocketException
 import dev.nikitatarasov.model.WebSocketDataCode
+import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusCode
 import io.ktor.serialization.kotlinx.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -24,85 +29,109 @@ fun Application.configureSockets() {
                 println("connect")
                 val gameCode = call.request.queryParameters["gameCode"]
                 if (gameCode.isNullOrBlank()) {
-                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_GAMECODE))
-                    close()
-                    return@webSocket
+                    throw NoGameCodeException()
                 }
 
                 val game = Controller.findGame(gameCode) ?: Controller.createGame(gameCode)
 
                 if (game.firstPlayer.isReady().not()) {
                     game.firstPlayer.session = this
-                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_SECOND_PLAYER_YET))
+                    sendSerialized(WebSocketDataCode(StatusCode.NO_SECOND_PLAYER_YET))
                     if (Controller.awaitSecondPlayer(game).not()) {
-                        sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_CODE_TIMEOUT_REACHED))
-                        close()
-                        return@webSocket
+                        throw TimeoutSecondPlayerException()
                     }
-                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.SECOND_PLAYER_CONNECTED))
+                    sendSerialized(WebSocketDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
 
                 } else {
                     println("here")
-                    if (game.secondPlayer.isReady()){
-                        sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_ALREADY_HAS_TWO_PLAYERS))
-                        close()
-                        return@webSocket
+                    if (game.secondPlayer.isReady()) {
+                        throw GameLobbyIsFullException()
                     }
 
                     game.secondPlayer.session = this
-                    sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.STATUS_OK))
+                    sendSerialized(WebSocketDataCode(StatusCode.STATUS_OK))
                 }
 
-                game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
-                game.secondPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
+                game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.YOUR_MOVE))
+                game.secondPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.OPPONENT_MOVE))
 
                 for (frame in incoming) {
                     if (frame is Frame.Text) {
                         val text = frame.readText()
 
                         // If Move comes from expected Player
-                        if (this == game.awaitMoveByPlayer.session){
+                        if (this == game.awaitMoveByPlayer.session) {
                             val isValidMove = game.gameBoard.setSymbol(game.awaitMoveByPlayer, text.toInt())
-                            if (isValidMove){
-                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_ACCEPTED))
-                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
-                                game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
-                                game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer!!)
-                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
-                                game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
+                            if (isValidMove) {
+                                game.awaitMoveByPlayer.session!!.sendSerialized(
+                                    WebSocketDataCode(
+                                        StatusCode.MOVE_ACCEPTED
+                                    )
+                                )
+                                game.awaitMoveByPlayer.session!!.sendSerialized(
+                                    WebSocketDataCode(
+                                        StatusCode.GAME_BOARD,
+                                        game.gameBoard.toJSON()
+                                    )
+                                )
+                                game.awaitMoveByPlayer.session!!.sendSerialized(
+                                    WebSocketDataCode(
+                                        StatusCode.OPPONENT_MOVE
+                                    )
+                                )
+                                game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer)
+                                game.awaitMoveByPlayer.session!!.sendSerialized(
+                                    WebSocketDataCode(
+                                        StatusCode.GAME_BOARD,
+                                        game.gameBoard.toJSON()
+                                    )
+                                )
+                                game.awaitMoveByPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.YOUR_MOVE))
 
                             } else {
-                                game.awaitMoveByPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_INVALID))
+                                game.awaitMoveByPlayer.session!!.sendSerialized(
+                                    WebSocketDataCode(
+                                        StatusCode.MOVE_INVALID
+                                    )
+                                )
                             }
 
                             val winner = game.hasGameWinner()
                             println("winner $winner")
-                            if (winner != null){
-                                if (winner == game.firstPlayer){
+                            if (winner != null) {
+                                if (winner == game.firstPlayer) {
                                     println("first player won")
-                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON))
-                                    game.secondPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON))
-                                } else if (winner == game.secondPlayer){
+                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.YOU_WON))
+                                    game.secondPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.OPPONENT_WON))
+                                } else if (winner == game.secondPlayer) {
                                     println("second player won")
-                                    game.secondPlayer!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON))
-                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON))
+                                    game.secondPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.YOU_WON))
+                                    game.firstPlayer.session!!.sendSerialized(WebSocketDataCode(StatusCode.OPPONENT_WON))
                                 }
 
                                 // game close
+                                // ask the players if they want another game... Same socket or new one?
                                 game.firstPlayer.session!!.close()
                                 game.secondPlayer.session!!.close()
-                                return@webSocket
                             }
                         } else {
-                            game.getOpponent(game.awaitMoveByPlayer!!)!!.session!!.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NOT_YOUR_TURN))
+                            game.getOpponent(game.awaitMoveByPlayer).session!!.sendSerialized(
+                                WebSocketDataCode(
+                                    StatusCode.NOT_YOUR_TURN
+                                )
+                            )
                             println("ignore")
                             // Ignore
                         }
                     }
                 }
+                println("WebSocket closed")
+            } catch (e: WebSocketException) {
+                sendSerialized(e.webSocketDataCode)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
+                close()
                 println("finally")
             }
 
