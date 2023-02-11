@@ -1,5 +1,6 @@
 package dev.nikitatarasov.model
 
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.LinkedHashSet
 import kotlin.random.Random
@@ -12,6 +13,7 @@ data class Game(
     val gameBoard: GameBoard = GameBoard()
     var awaitMoveByPlayer: Player = firstPlayer
     val players = listOf(firstPlayer, secondPlayer)
+    val creationTime: LocalDateTime = LocalDateTime.now()
 
     fun hasGameWinner(): Player? {
         return gameBoard.hasGameWinner(firstPlayer!!, secondPlayer!!)
@@ -26,8 +28,6 @@ data class Game(
     }
 
     companion object {
-        val games = Collections.synchronizedSet<Game>(LinkedHashSet())
-
         private val charPool: List<Char> = ('A'..'Z') + ('0'..'9')
         fun randomGameId(): String {
             return (1..4)
