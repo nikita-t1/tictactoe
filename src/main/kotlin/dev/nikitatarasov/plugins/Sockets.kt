@@ -14,6 +14,7 @@ import java.time.Duration
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import java.util.*
 
 fun Application.configureSockets() {
     install(WebSockets) {
@@ -27,7 +28,7 @@ fun Application.configureSockets() {
         webSocket("/ws") { // websocketSession
             try {
                 println("connect")
-                val gameCode = call.request.queryParameters["gameCode"]
+                val gameCode = call.request.queryParameters["gameCode"]?.uppercase()
                 if (gameCode.isNullOrBlank()) {
                     throw NoGameCodeException()
                 }
