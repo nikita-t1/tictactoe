@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import StartView from '../views/StartView.vue'
-import CreateNewGame from '../views/CreateNewGame.vue'
-import JoinExistingGame from '../views/JoinExistingGame.vue'
-import PlayView from '../views/PlayView.vue'
+import StartView from '@/views/StartView.vue'
+import CreateNewGame from '@/views/CreateNewGame.vue'
+import JoinExistingGame from '@/views/JoinExistingGame.vue'
+import PlayView from '@/views/PlayView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
