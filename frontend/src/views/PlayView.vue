@@ -30,7 +30,8 @@
 
 import {useWebSocketStore} from "@/stores/websocket";
 import {onMounted, ref} from "vue";
-import {MessageMap, WebSocketDataCode} from "@/WebSocketDataCode";
+import {ErrorCodes, MessageMap, WebSocketCodes} from "@/StatusCodes";
+import router from "@/router";
 
 const one = ref("")
 const two = ref("")
@@ -59,35 +60,35 @@ function startWebSocketListener(){
     // alert(webSocketData.statusCode)
     switch (parseInt(webSocketData.statusCode)) {
 
-      case WebSocketDataCode.STATUS_OK:
+      case WebSocketCodes.STATUS_OK:
         msg.value = "Status OK"
         break
-      case WebSocketDataCode.YOUR_MOVE:
+      case WebSocketCodes.YOUR_MOVE:
         msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
-          isMyMove.value = true
+        isMyMove.value = true
         break
-      case WebSocketDataCode.OPPONENT_MOVE:
+      case WebSocketCodes.OPPONENT_MOVE:
         msg.value = "It's your Opponent's Move"
         isMyMove.value = false
         break
-      case WebSocketDataCode.MOVE_INVALID:
+      case WebSocketCodes.MOVE_INVALID:
         msg.value = "Move is not valid"
         break
-      case WebSocketDataCode.NOT_YOUR_TURN:
+      case WebSocketCodes.NOT_YOUR_TURN:
         msg.value = "It's not your turn"
         break
-      case WebSocketDataCode.YOU_WON:
+      case WebSocketCodes.YOU_WON:
         msg.value = "You Won"
         break
-      case WebSocketDataCode.OPPONENT_WON:
+      case WebSocketCodes.OPPONENT_WON:
         msg.value = "Opponent Won"
         break
 
     }
     msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
-    if (webSocketData.statusCode == WebSocketDataCode.GAME_BOARD){
-      const gameBoard =JSON.parse(webSocketData.msg)
+    if (webSocketData.statusCode == WebSocketCodes.GAME_BOARD) {
+      const gameBoard = JSON.parse(webSocketData.msg)
 
       console.log(gameBoard.one)
       console.log(gameBoard.two)

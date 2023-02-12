@@ -49,7 +49,7 @@ import {ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
 import {getBaseURL, getBaseURLWithProtocol} from "@/getBaseURL";
-import {WebSocketDataCode, MessageMap} from "@/WebSocketDataCode";
+import {WebSocketCodes, MessageMap} from "@/StatusCodes";
 
 const gameCode = ref("----")
 const msg = ref("")
@@ -69,7 +69,7 @@ function requestGameCode() {
           const webSocketData = JSON.parse(event.data)
           msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
-          if (webSocketData.statusCode == WebSocketDataCode.SECOND_PLAYER_CONNECTED) {
+          if (webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED) {
             router.push({path: "/play", query: {gameCode: gameCode.value}})
           }
 

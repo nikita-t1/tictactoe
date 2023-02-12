@@ -1,4 +1,4 @@
-enum WebSocketDataCode {
+enum WebSocketCodes {
 
     STATUS_OK = 4000,
     GAME_BOARD = 4001,
@@ -37,32 +37,35 @@ enum ErrorCodes {
 
 const MessageMap = new Map()
 
-MessageMap.set(WebSocketDataCode.STATUS_OK, `STATUS_OK`)
+MessageMap.set(WebSocketCodes.STATUS_OK, `STATUS_OK`)
 
-MessageMap.set(WebSocketDataCode.FIRST_PLAYER_CONNECTED, `The first Player has joined the Game`)
-MessageMap.set(WebSocketDataCode.SECOND_PLAYER_CONNECTED, `The second Player has joined the Game`)
-MessageMap.set(WebSocketDataCode.YOUR_MOVE, `It's your turn`)
-MessageMap.set(WebSocketDataCode.OPPONENT_MOVE, `It's your opponent's turn now`)
-MessageMap.set(WebSocketDataCode.REMATCH_REQUESTED, `Your opponent requested a rematch`)
-MessageMap.set(WebSocketDataCode.REMATCH_ACCEPTED, `Your opponent accepted the rematch`)
+MessageMap.set(WebSocketCodes.FIRST_PLAYER_CONNECTED, `The first Player has joined the Game`)
+MessageMap.set(WebSocketCodes.SECOND_PLAYER_CONNECTED, `The second Player has joined the Game`)
+MessageMap.set(WebSocketCodes.YOUR_MOVE, `It's your turn`)
+MessageMap.set(WebSocketCodes.OPPONENT_MOVE, `It's your opponent's turn now`)
+MessageMap.set(WebSocketCodes.REMATCH_REQUESTED, `Your opponent requested a rematch`)
+MessageMap.set(WebSocketCodes.REMATCH_ACCEPTED, `Your opponent accepted the rematch`)
 
-MessageMap.set(WebSocketDataCode.MOVE_ACCEPTED, `This move was valid`)
-MessageMap.set(WebSocketDataCode.YOU_WON, `You are the Winner`)
-MessageMap.set(WebSocketDataCode.OPPONENT_WON, `Sorry, you lost the Game`)
+MessageMap.set(WebSocketCodes.MOVE_ACCEPTED, `This move was valid`)
+MessageMap.set(WebSocketCodes.YOU_WON, `You are the Winner`)
+MessageMap.set(WebSocketCodes.OPPONENT_WON, `Sorry, you lost the Game`)
 
-MessageMap.set(WebSocketDataCode.NO_SECOND_PLAYER_YET, `No second Player has joined this Game yet`)
-MessageMap.set(WebSocketDataCode.OPPONENT_DISCONNECTED, `Your opponent has left the Game`)
+MessageMap.set(WebSocketCodes.NO_SECOND_PLAYER_YET, `No second Player has joined this Game yet`)
+MessageMap.set(WebSocketCodes.OPPONENT_DISCONNECTED, `Your opponent has left the Game`)
 
-MessageMap.set(WebSocketDataCode.NOT_YOUR_TURN, `It's not your turn. Be patient`)
-MessageMap.set(WebSocketDataCode.MOVE_INVALID, `This move is not allowed`)
-MessageMap.set(WebSocketDataCode.GAME_ALREADY_HAS_TWO_PLAYERS, `The Game with this Code already has 2 Players`)
-MessageMap.set(WebSocketDataCode.NO_GAMECODE_IN_QUERY, `No GameCode was send with this request`)
-MessageMap.set(WebSocketDataCode.NO_GAME_WITH_THIS_CODE_FOUND, `No Game with this Code was found`)
+MessageMap.set(WebSocketCodes.NOT_YOUR_TURN, `It's not your turn. Be patient`)
+MessageMap.set(WebSocketCodes.MOVE_INVALID, `This move is not allowed`)
+MessageMap.set(WebSocketCodes.GAME_ALREADY_HAS_TWO_PLAYERS, `The Game with this Code already has 2 Players`)
+MessageMap.set(WebSocketCodes.NO_GAMECODE_IN_QUERY, `No GameCode was send with this request`)
+MessageMap.set(WebSocketCodes.NO_GAME_WITH_THIS_CODE_FOUND, `No Game with this Code was found`)
 
-MessageMap.set(WebSocketDataCode.GAME_CODE_TIMEOUT_REACHED, `Timeout reached before second player connected`)
-MessageMap.set(WebSocketDataCode.GENERIC_EXCEPTION, `Generic Exception`)
+MessageMap.set(WebSocketCodes.GAME_CODE_TIMEOUT_REACHED, `Timeout reached before second player connected`)
+MessageMap.set(WebSocketCodes.GENERIC_EXCEPTION, `Generic Exception`)
+
+//////////////////////////////////////////////////
 
 MessageMap.set(ErrorCodes.GENERIC_ERROR, `Generic Exception`)
 MessageMap.set(ErrorCodes.WEBSOCKET_IS_NULL, `The Websocket Connection seems to be null`)
 
-export { WebSocketDataCode, MessageMap}
+
+export { WebSocketCodes, ErrorCodes, MessageMap}

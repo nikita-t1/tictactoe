@@ -47,7 +47,7 @@ import {onMounted, onRenderTracked, onRenderTriggered, ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocket";
 import {getBaseURL} from "@/getBaseURL";
-import {MessageMap, WebSocketDataCode} from "@/WebSocketDataCode";
+import {MessageMap, WebSocketCodes} from "@/StatusCodes";
 
 const gameCode = ref("")
 const msg = ref("")
@@ -59,7 +59,7 @@ onMounted(() => {
 })
 
 
-function startGame(){
+function startGame() {
 
   const protocol = location.protocol == 'https:' ? "wss" : "ws"
   const ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
@@ -70,7 +70,14 @@ function startGame(){
     const webSocketData = JSON.parse(event.data)
     msg.value = MessageMap.get(parseInt(webSocketData.statusCode))
 
-    if (webSocketData.statusCode == WebSocketDataCode.STATUS_OK) {
+    if (webSocketData.statusCode == WebSocketCodes.NO_SECOND_PLAYER_YET) {
+      // Server doesn't distinguish between first/second Player,
+      // but this Vue Component always belongs to the Second user and the second user doesn't have to wait for someone
+      msg.value = MessageMap.get(WebSocketCodes.NO_GAME_WITH_THIS_CODE_FOUND)
+      useWebSocketStore().ws?.close()
+    }
+
+    if (webSocketData.statusCode == WebSocketCodes.STATUS_OK) {
       router.push({path: "/play", query: {gameCode: gameCode.value}})
     }
 
