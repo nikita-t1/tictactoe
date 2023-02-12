@@ -46,16 +46,23 @@ const nine = ref("")
 const msg = ref("What have you expected to see?")
 const isMyMove = ref(false)
 
+let ws: WebSocket | null = null;
+
 onMounted(() => {
-  startWebSocketListener()
+  ws = useWebSocketStore().ws
+  if (ws == null) {
+    router.push({path: "/error", hash: `#${ErrorCodes.WEBSOCKET_IS_NULL}`})
+  } else {
+    startWebSocketListener()
+  }
 })
 
-function sendWebSocketData(number: number){
-  useWebSocketStore().ws.send(number)
+function sendWebSocketData(number: number) {
+  ws!.send(number.toString())
 }
 
-function startWebSocketListener(){
-  useWebSocketStore().ws.onmessage = (event: any) => {
+function startWebSocketListener() {
+  ws!.onmessage = (event: any) => {
     const webSocketData = JSON.parse(event.data)
     // alert(webSocketData.statusCode)
     switch (parseInt(webSocketData.statusCode)) {
