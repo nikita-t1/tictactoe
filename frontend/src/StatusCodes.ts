@@ -30,6 +30,11 @@ enum WebSocketDataCode {
     GENERIC_EXCEPTION = 4599,
 }
 
+enum ErrorCodes {
+    GENERIC_ERROR = 600,
+    WEBSOCKET_IS_NULL = 601
+}
+
 const MessageMap = new Map()
 
 MessageMap.set(WebSocketDataCode.STATUS_OK, `STATUS_OK`)
@@ -57,5 +62,7 @@ MessageMap.set(WebSocketDataCode.NO_GAME_WITH_THIS_CODE_FOUND, `No Game with thi
 MessageMap.set(WebSocketDataCode.GAME_CODE_TIMEOUT_REACHED, `Timeout reached before second player connected`)
 MessageMap.set(WebSocketDataCode.GENERIC_EXCEPTION, `Generic Exception`)
 
+MessageMap.set(ErrorCodes.GENERIC_ERROR, `Generic Exception`)
+MessageMap.set(ErrorCodes.WEBSOCKET_IS_NULL, `The Websocket Connection seems to be null`)
 
 export { WebSocketDataCode, MessageMap}
