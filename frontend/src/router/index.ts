@@ -3,6 +3,7 @@ import StartView from '@/views/StartView.vue'
 import CreateNewGame from '@/views/CreateNewGame.vue'
 import JoinExistingGame from '@/views/JoinExistingGame.vue'
 import PlayView from '@/views/PlayView.vue'
+import ErrorView from "@/views/ErrorView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,22 +20,27 @@ const router = createRouter({
       path: '/start',
       alias: "/",
       name: 'start',
-      component: StartView
+      component: StartView,
     },
     {
       path: '/create-new-game',
       name: 'create-new-game',
-      component: CreateNewGame
+      component: CreateNewGame,
     },
     {
       path: '/join-existing-game',
       name: 'join-existing-game',
-      component: JoinExistingGame
+      component: JoinExistingGame,
     },
     {
       path: '/play',
       name: 'play',
       component: PlayView
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: ErrorView
     }
   ]
 })
