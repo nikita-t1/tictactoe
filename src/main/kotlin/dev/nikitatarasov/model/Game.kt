@@ -19,6 +19,21 @@ data class Game(
         return gameBoard.hasGameWinner(firstPlayer!!, secondPlayer!!)
     }
 
+    fun removePlayer(session: DefaultWebSocketServerSession) {
+        val player = getPlayerBySession(session)
+        player?.session = null
+    }
+
+    fun getPlayerBySession(session: DefaultWebSocketServerSession): Player? {
+        return if (firstPlayer.session == session) {
+            firstPlayer
+        } else if (secondPlayer.session == session) {
+            secondPlayer
+        } else {
+            null
+        }
+    }
+
     fun getOpponent(player: Player): Player {
         return if (player == firstPlayer) {
             secondPlayer
