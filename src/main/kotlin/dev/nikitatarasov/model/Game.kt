@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
 
+@Serializable
 data class Game(
     val id: String = randomGameId(),
     val firstPlayer: Player = Player(symbol = PlayerSymbol.CROSS),

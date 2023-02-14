@@ -1,5 +1,8 @@
 package dev.nikitatarasov.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class GameBoard {
 
     private var gamefield: List<MutableList<PlayerSymbol>> = List(3) { MutableList(3) { PlayerSymbol.UNSET } }
