@@ -2,6 +2,7 @@ package dev.nikitatarasov
 
 import dev.nikitatarasov.model.Game
 import kotlinx.coroutines.delay
+import kotlinx.datetime.toJavaLocalDateTime
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -30,7 +31,7 @@ object Controller {
     fun removeExpiredGames(expirationTime: Int = 60){
         // Coroutine?
         getAllGames()
-            ?.filter { ChronoUnit.MINUTES.between(it.creationTime, LocalDateTime.now()) >= expirationTime }
+            ?.filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
             ?.forEach {
                 println("Remove Game Code: ${it.id}")
                 removeGame(it)

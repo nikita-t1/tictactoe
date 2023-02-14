@@ -1,9 +1,10 @@
 package dev.nikitatarasov.model
 
-import java.time.LocalDateTime
-import java.util.*
-import kotlin.collections.LinkedHashSet
+import dev.nikitatarasov.util.now
+import io.ktor.server.websocket.*
+import kotlinx.serialization.Serializable
 import kotlin.random.Random
+import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
 
 data class Game(
     val id: String = randomGameId(),
@@ -13,7 +14,7 @@ data class Game(
     val gameBoard: GameBoard = GameBoard()
     var awaitMoveByPlayer: Player = firstPlayer
     val players = listOf(firstPlayer, secondPlayer)
-    val creationTime: LocalDateTime = LocalDateTime.now()
+    val creationTime = LocalDateTime.now()
 
     fun hasGameWinner(): Player? {
         return gameBoard.hasGameWinner(firstPlayer!!, secondPlayer!!)
