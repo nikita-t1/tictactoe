@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
+    <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white">
         <span class="transition-all duration-700 text-gray-800 dark:text-white">
         {{ msg }}
       </span>

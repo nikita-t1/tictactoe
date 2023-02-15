@@ -24,8 +24,7 @@
     </div>
 
     <div :class="msg !== '' ? 'visible opacity-100' : 'invisible opacity-0'" class="transition-all duration-1000">
-      <div
-          class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white bg-white border shadow-sm rounded-xl dark:bg-gray-800  dark:border-gray-700 dark:shadow-slate-700/[.7]">
+      <div class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white">
         <div
             class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
             role="status" aria-label="loading">
