@@ -38,9 +38,10 @@ object Controller {
             }
     }
 
-    suspend inline fun awaitSecondPlayer(game: Game): Boolean {
+    suspend inline fun awaitPlayer(game: Game): Boolean {
+        val playerToAwait = if (game.firstPlayer.isReady()) game.secondPlayer else game.firstPlayer
         val timeout = System.currentTimeMillis() + (1000 * 60 * 5) // 5 min
-        while (game.secondPlayer.isReady().not()) {
+        while (playerToAwait.isReady().not()) {
             delay(100)
             if (System.currentTimeMillis() > timeout){
                 removeGame(game)
