@@ -24,7 +24,7 @@ fun Application.configureRouting() {
             call.respondText { gameCode }
         }
         get("/gameCodes") {
-            call.respondText(Controller.getAllGames().toString())
+            call.respond(Controller.getAllGames()!!.toList())
         }
         singlePageApplication {
             useResources = true

@@ -3,6 +3,7 @@ package dev.nikitatarasov.model
 import dev.nikitatarasov.serializer.UUIDSerializer
 import io.ktor.server.websocket.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.util.*
 
 @Serializable
@@ -11,7 +12,7 @@ data class Player(
     val symbol: PlayerSymbol,
 //    val session: DefaultWebSocketServerSession
 ) {
-    var session: DefaultWebSocketServerSession? = null
+    @Transient var session: DefaultWebSocketServerSession? = null
 
     fun isReady(): Boolean = session != null
 }
