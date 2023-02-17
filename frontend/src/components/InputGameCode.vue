@@ -1,7 +1,9 @@
 <template>
   <div>
-    <div class="transition-all duration-700 flex flex-col w-96 h-80 bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-      <div class="transition-all duration-700 bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700">
+    <div
+        class="transition-all duration-700 flex flex-col w-96 h-80 bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+      <div
+          class="transition-all duration-700 bg-gray-100 border-b rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:bg-gray-800 dark:border-gray-700">
         <p class="transition-all duration-700 mt-1 text-sm text-gray-500 dark:text-gray-500">
           Player 2
         </p>
@@ -76,7 +78,7 @@ function startGame() {
       useWebSocketStore().ws?.close()
     }
 
-    if (webSocketData.statusCode == WebSocketCodes.STATUS_OK) {
+    if (webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED) {
       router.push({path: "/play", query: {gameCode: gameCode.value}})
     }
 

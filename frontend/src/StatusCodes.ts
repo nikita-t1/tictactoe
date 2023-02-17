@@ -38,6 +38,7 @@ enum ErrorCodes {
 const MessageMap = new Map()
 
 MessageMap.set(WebSocketCodes.STATUS_OK, `STATUS_OK`)
+MessageMap.set(WebSocketCodes.GAME_BOARD, `GAME_BOARD`)
 
 MessageMap.set(WebSocketCodes.FIRST_PLAYER_CONNECTED, `The first Player has joined the Game`)
 MessageMap.set(WebSocketCodes.SECOND_PLAYER_CONNECTED, `The second Player has joined the Game`)

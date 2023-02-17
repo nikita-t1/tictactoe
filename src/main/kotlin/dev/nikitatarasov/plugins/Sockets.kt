@@ -6,6 +6,7 @@ import dev.nikitatarasov.exceptions.NoGameCodeException
 import dev.nikitatarasov.exceptions.TimeoutSecondPlayerException
 import dev.nikitatarasov.exceptions.WebSocketException
 import dev.nikitatarasov.model.Game
+import dev.nikitatarasov.model.WebSocketDataCode
 import io.ktor.serialization.kotlinx.*
 import dev.nikitatarasov.model.WebSocketDataCode as WSDataCode
 import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusCode
@@ -14,6 +15,7 @@ import java.time.Duration
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 fun Application.configureSockets() {
@@ -52,22 +54,20 @@ fun Application.configureSockets() {
                             if (isValidMove) {
                                 game.awaitMoveByPlayer.session?.let {
                                     sendSerialized(WSDataCode(StatusCode.MOVE_ACCEPTED))
-                                    sendSerialized(WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
                                     sendSerialized(WSDataCode(StatusCode.OPPONENT_MOVE))
                                 }
+                                println(game.awaitMoveByPlayer.session)
                                 game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer)
-                                game.awaitMoveByPlayer.session?.let {
-                                    sendSerialized(WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSON()))
-                                    sendSerialized(WSDataCode(StatusCode.YOUR_MOVE))
-                                }
+                                println(game.awaitMoveByPlayer.session)
+                                game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.YOUR_MOVE))
+
+                                sendToPlayers(game, WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
 
                             } else {
                                 game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.MOVE_INVALID))
                             }
 
                             val winner = game.hasGameWinner()
-                            println("winner $winner")
-
                             when (winner) {
                                 game.firstPlayer -> {
                                     sendToPlayers(
@@ -115,9 +115,13 @@ fun Application.configureSockets() {
     }
 }
 
-private suspend fun DefaultWebSocketServerSession.sendToPlayers(game: Game, toFirst: WSDataCode, toSecond: WSDataCode) {
+private suspend fun sendToPlayers(game: Game, toFirst: WebSocketDataCode, toSecond: WebSocketDataCode? = null) {
     game.firstPlayer.session?.sendSerialized(toFirst)
-    game.secondPlayer.session?.sendSerialized(toSecond)
+    if (toSecond == null) {
+        game.secondPlayer.session?.sendSerialized(toFirst)
+    } else {
+        game.secondPlayer.session?.sendSerialized(toSecond)
+    }
 }
 
 
