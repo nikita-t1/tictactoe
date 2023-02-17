@@ -83,16 +83,31 @@ class GameBoard {
     fun toJSON(): String {
         return """
             {
-                "one": "${gamefield[0][0].fieldToSymbol()}",
-                "two": "${gamefield[0][1].fieldToSymbol()}",
-                "three": "${gamefield[0][2].fieldToSymbol()}",
-                "four": "${gamefield[1][0].fieldToSymbol()}",
-                "five": "${gamefield[1][1].fieldToSymbol()}",
-                "six": "${gamefield[1][2].fieldToSymbol()}",
-                "seven": "${gamefield[2][0].fieldToSymbol()}",
-                "eight": "${gamefield[2][1].fieldToSymbol()}",
-                "nine": "${gamefield[2][2].fieldToSymbol()}"
+                "firstRow": [
+                    first: ${gamefield[0][0].fieldToInt()},
+                    second: ${gamefield[0][1].fieldToInt()},
+                    third: ${gamefield[0][2].fieldToInt()}
+                ],
+                "secondRow": [
+                    first: ${gamefield[1][0].fieldToInt()},
+                    second: ${gamefield[1][1].fieldToInt()},
+                    third: ${gamefield[1][2].fieldToInt()}
+                ],
+                "thirdRow": [
+                    first: ${gamefield[2][0].fieldToInt()},
+                    second: ${gamefield[2][1].fieldToInt()},
+                    third: ${gamefield[2][2].fieldToInt()} 
+                ],
             }
+        """.trimIndent()
+    }
+
+    fun toJSONList(): String {
+        return """
+            [ ${gamefield[0][0].fieldToInt()}, ${gamefield[0][1].fieldToInt()}, ${gamefield[0][2].fieldToInt()},
+              ${gamefield[1][0].fieldToInt()}, ${gamefield[1][1].fieldToInt()}, ${gamefield[1][2].fieldToInt()},
+              ${gamefield[2][0].fieldToInt()}, ${gamefield[2][1].fieldToInt()}, ${gamefield[2][2].fieldToInt()} 
+            ]
         """.trimIndent()
     }
 

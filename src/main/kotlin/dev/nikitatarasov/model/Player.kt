@@ -30,4 +30,12 @@ enum class PlayerSymbol {
             UNSET -> " "
         }
     }
+
+    fun fieldToInt(): Int{
+        return when (this) {
+            NOUGHT -> 2
+            CROSS -> 1
+            UNSET -> 0
+        }
+    }
 }
