@@ -105,6 +105,10 @@ fun Application.configureSockets() {
                 e.printStackTrace()
             } finally {
                 game?.let {
+                    val player = game.getPlayerBySession(this)
+                    player?.let {
+                        game.getOpponent(player).session?.sendSerialized(WSDataCode(StatusCode.OPPONENT_DISCONNECTED))
+                    }
                     game.removePlayer(this)
                 }
                 if (game != null && game.firstPlayer.session == null && game.secondPlayer.session == null){
@@ -133,13 +137,13 @@ private suspend fun DefaultWebSocketServerSession.assignPlayersToGame(game: Game
         game.firstPlayer.session = this
 
         when (game.secondPlayer.isReady()) {
-            true -> sendSerialized(WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
+            true -> sendToPlayers(game, WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
             false -> {
-                sendSerialized(WSDataCode(StatusCode.NO_SECOND_PLAYER_YET))
+                sendToPlayers(game, WSDataCode(StatusCode.NO_SECOND_PLAYER_YET))
                 if (Controller.awaitPlayer(game).not()) {
                     throw TimeoutSecondPlayerException()
                 }
-                sendSerialized(WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
+                sendToPlayers(game, WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
             }
         }
 
@@ -147,13 +151,13 @@ private suspend fun DefaultWebSocketServerSession.assignPlayersToGame(game: Game
         game.secondPlayer.session = this
 
         when (game.firstPlayer.isReady()) {
-            true -> sendSerialized(WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
+            true -> sendToPlayers(game, WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
             false -> {
-                sendSerialized(WSDataCode(StatusCode.NO_FIRST_PLAYER_YET))
+                sendToPlayers(game, WSDataCode(StatusCode.NO_FIRST_PLAYER_YET))
                 if (Controller.awaitPlayer(game).not()) {
                     throw TimeoutSecondPlayerException()
                 }
-                sendSerialized(WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
+                sendToPlayers(game, WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
             }
         }
 

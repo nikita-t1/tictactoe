@@ -1,11 +1,13 @@
 <template>
   <div class="transition-all duration-700 flex flex-col h-screen items-center justify-center mx-auto">
+    <OpponentDisconnectedModal ref="OpponentDisconnectedModalRef" @timeout-reached.once="timeoutReached"/>
+<!--    <button type="button" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" data-hs-overlay="#hs-sign-out-alert">-->
+<!--      Open modal-->
+<!--    </button>-->
 
     <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">
       <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-
         <div v-for="(item, index) in gameBoard" class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(index+1)">{{ item }}</div>
-
       </div>
     </div>
 
@@ -13,6 +15,25 @@
         <span class="transition-all duration-700 text-gray-800 dark:text-white">
         {{ msg }}
       </span>
+    </div>
+
+    <div v-if="hasGameWinner"
+        class="transition-all duration-700 flex flex-col md:flex-row max-w-xl content-center self-center items-center justify-center mx-auto space-x-2">
+      <div
+          class="flex-none mt-10 mx-auto inline-flex items-center gap-2 mt-5 text-sm font-medium text-blue-500 hover:text-blue-700">
+        <button type="button"
+                class="transition-all duration-700 py-[.688rem] px-4 mx-auto w-48 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-600 hover:bg-blue-700 text-white text-sm dark:focus:ring-offset-gray-800">
+          Request Rematch
+        </button>
+      </div>
+      <router-link @click="resetConnection" to="/"
+                   class="flex-none mx-auto inline-flex items-center gap-2 mt-10  text-sm font-medium text-blue-500 hover:text-blue-700">
+        <button type="button"
+                class="transition-all duration-700 py-[.688rem] px-4 w-48 inline-flex justify-center items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-600 hover:text-white hover:bg-blue-600 hover:border-blue-600 text-sm dark:border-gray-700 dark:hover:border-blue-600">
+          Home
+        </button>
+      </router-link>
+
     </div>
   </div>
 
@@ -26,6 +47,8 @@ import {onMounted, ref} from "vue";
 import type {Ref} from 'vue'
 import {ErrorCodes, MessageMap, WebSocketCodes} from "@/StatusCodes";
 import router from "@/router";
+import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
+const OpponentDisconnectedModalRef = ref<OpponentDisconnectedModal | null>(null)
 
 const msg = ref("What have you expected to see?")
 const isMyMove = ref(false)
@@ -43,6 +66,19 @@ onMounted(() => {
     }
 })
 
+function timeoutReached(){
+  resetConnection()
+}
+
+function resetConnection() {
+  ws?.close()
+  useWebSocketStore().ws = null
+}
+
+function requestRematch() {
+  // ws?.send()
+}
+
 function sendWebSocketData(number: number) {
   ws!.send(number.toString())
 }
@@ -50,6 +86,7 @@ function sendWebSocketData(number: number) {
 function startWebSocketListener() {
   ws!.onmessage = (event: any) => {
     const webSocketData = JSON.parse(event.data)
+    console.log(webSocketData)
 
     if (webSocketData.statusCode == WebSocketCodes.YOUR_MOVE){
       isMyMove.value = true
@@ -59,6 +96,14 @@ function startWebSocketListener() {
 
     if (webSocketData.statusCode == WebSocketCodes.YOU_WON || webSocketData.statusCode == WebSocketCodes.OPPONENT_WON){
       hasGameWinner.value = true
+    }
+
+    if (webSocketData.statusCode == WebSocketCodes.OPPONENT_DISCONNECTED){
+      OpponentDisconnectedModalRef.value.openModal()
+    }
+
+    if (webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED){
+      OpponentDisconnectedModalRef.value.opponentReConnected()
     }
 
     if (webSocketData.statusCode != WebSocketCodes.GAME_BOARD){
