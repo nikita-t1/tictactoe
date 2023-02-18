@@ -107,6 +107,9 @@ fun Application.configureSockets() {
                 game?.let {
                     game.removePlayer(this)
                 }
+                if (game != null && game.firstPlayer.session == null && game.secondPlayer.session == null){
+                    Controller.removeGame(game)
+                }
                 close()
                 println("finally")
             }
