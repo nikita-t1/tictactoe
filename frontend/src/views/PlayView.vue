@@ -48,7 +48,7 @@ import type {Ref} from 'vue'
 import {ErrorCodes, MessageMap, WebSocketCodes} from "@/StatusCodes";
 import router from "@/router";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
-const OpponentDisconnectedModalRef = ref<OpponentDisconnectedModal | null>(null)
+const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
 
 const msg = ref("What have you expected to see?")
 const isMyMove = ref(false)
@@ -99,11 +99,11 @@ function startWebSocketListener() {
     }
 
     if (webSocketData.statusCode == WebSocketCodes.OPPONENT_DISCONNECTED){
-      OpponentDisconnectedModalRef.value.openModal()
+      OpponentDisconnectedModalRef.value?.openModal()
     }
 
     if (webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED){
-      OpponentDisconnectedModalRef.value.opponentReConnected()
+      OpponentDisconnectedModalRef.value?.opponentReConnected()
     }
 
     if (webSocketData.statusCode != WebSocketCodes.GAME_BOARD){
