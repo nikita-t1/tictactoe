@@ -1,9 +1,10 @@
 <template>
   <div>
     <button @click="next()" aria-label="Switch Theme Button" id="theme-toggle" type="button"
-            class="transition-all duration-1000 inline-block dark:text-gray-400 text-slate-700 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg p-1.5 m-2 absolute top-2 right-6">
+            class="transition-all duration-1000 group inline-block dark:text-gray-400 text-slate-700 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg p-1.5 m-2 absolute top-2 right-6">
 
 
+      <span class="invisible -top-1 right-14 w-16 text-center absolute z-10 group-hover:visible">Theme: {{mode}}</span>
       <svg id="theme-toggle-dark-icon" class="w-8 h-8"
            fill="currentColor"
            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
