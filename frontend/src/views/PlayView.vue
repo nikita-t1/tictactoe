@@ -1,13 +1,13 @@
 <template>
   <div class="transition-all duration-700 flex flex-col h-screen items-center justify-center mx-auto">
     <OpponentDisconnectedModal ref="OpponentDisconnectedModalRef" @timeout-reached.once="timeoutReached"/>
-<!--    <button type="button" class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" data-hs-overlay="#hs-sign-out-alert">-->
-<!--      Open modal-->
-<!--    </button>-->
 
     <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">
       <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-        <div v-for="(item, index) in gameBoard" class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(index+1)">{{ item }}</div>
+        <div v-for="(item, index) in gameBoard" class="field cursor-pointer" :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(index+1)">
+          <IconCross v-if="item === 1"/>
+          <IconCircle v-if="item === 2"/>
+        </div>
       </div>
     </div>
 
@@ -48,6 +48,9 @@ import type {Ref} from 'vue'
 import {ErrorCodes, MessageMap, WebSocketCodes} from "@/StatusCodes";
 import router from "@/router";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
+import IconCircle from "@/components/icons/IconCircle.vue";
+import IconCross from "@/components/icons/IconCross.vue";
+
 const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
 
 const msg = ref("What have you expected to see?")
