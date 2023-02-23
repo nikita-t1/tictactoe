@@ -15,27 +15,34 @@ object Controller {
     fun getAllGames() = games as? Set<Game>
 
     fun findGame(gameCode: String): Game? {
-        return games.find { it.id == gameCode }
+        synchronized(games){
+            return games.find { it.id == gameCode }
+        }
     }
 
     fun removeGame(game: Game){
-        games.remove(game)
+        synchronized(games) {
+            games.remove(game)
+        }
     }
 
     fun createGame(gameCode: String): Game {
-        val game = Game(gameCode)
-        games.add(game)
-        return game
+        synchronized(games) {
+            val game = Game(gameCode)
+            games.add(game)
+            return game
+        }
     }
 
     fun removeExpiredGames(expirationTime: Int = 60){
-        // Coroutine?
-        getAllGames()
-            ?.filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
-            ?.forEach {
-                println("Remove Game Code: ${it.id}")
-                removeGame(it)
-            }
+        synchronized(games) {
+            getAllGames()
+                ?.filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
+                ?.forEach {
+                    println("Remove Game Code: ${it.id}")
+                    removeGame(it)
+                }
+        }
     }
 
     suspend inline fun awaitPlayer(game: Game): Boolean {
