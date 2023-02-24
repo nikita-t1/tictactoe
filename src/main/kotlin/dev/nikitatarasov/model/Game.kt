@@ -1,24 +1,24 @@
 package dev.nikitatarasov.model
 
 import dev.nikitatarasov.util.now
-import io.ktor.server.websocket.*
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
+import io.ktor.server.websocket.DefaultWebSocketServerSession
 
 @Serializable
 data class Game(
     val id: String = randomGameId(),
     val firstPlayer: Player = Player(symbol = PlayerSymbol.CROSS),
-    var secondPlayer: Player = Player(symbol = PlayerSymbol.NOUGHT),
+    val secondPlayer: Player = Player(symbol = PlayerSymbol.NOUGHT),
 ) {
     val gameBoard: GameBoard = GameBoard()
     var awaitMoveByPlayer: Player = firstPlayer
-    val players = listOf(firstPlayer, secondPlayer)
     val creationTime = LocalDateTime.now()
+    var rematchRequested = false
 
     fun hasGameWinner(): Player? {
-        return gameBoard.hasGameWinner(firstPlayer!!, secondPlayer!!)
+        return gameBoard.hasGameWinner(firstPlayer, secondPlayer)
     }
 
     fun removePlayer(session: DefaultWebSocketServerSession) {

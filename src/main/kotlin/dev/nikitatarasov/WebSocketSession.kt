@@ -5,7 +5,9 @@ import dev.nikitatarasov.exceptions.NoGameCodeException
 import dev.nikitatarasov.exceptions.TimeoutSecondPlayerException
 import dev.nikitatarasov.exceptions.WebSocketException
 import dev.nikitatarasov.model.Game
-import dev.nikitatarasov.model.WebSocketDataCode
+import dev.nikitatarasov.model.Player
+import dev.nikitatarasov.model.WebSocketDataCode as WSDataCode
+import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusCode
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.websocket.Frame
@@ -28,11 +30,16 @@ suspend fun DefaultWebSocketServerSession.startSession(){
             if (frame is Frame.Text) {
                 val text = frame.readText()
 
-                // If Move comes from expected Player
-                if (this == game.awaitMoveByPlayer.session) {
-                    handleIncomingFrame(game, text)
+                if (game.hasGameWinner() == null) { // Game is still going
+                    // If Move comes from expected Player
+                    if (this == game.awaitMoveByPlayer.session) {
+                        handleIncomingFrame(game, text)
 
-                } else this.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NOT_YOUR_TURN))
+                    } else this.sendSerialized(WSDataCode(StatusCode.NOT_YOUR_TURN))
+                    handleWinnerCheck(game)
+                } else { // Game is over
+                    handleRematchRequest(game, text, this)
+                }
 
             }
         }
@@ -46,12 +53,27 @@ suspend fun DefaultWebSocketServerSession.startSession(){
     }
 }
 
+private suspend fun handleRematchRequest(game: Game, text: String, session: DefaultWebSocketServerSession){
+    println(text)
+    when (text) {
+        StatusCode.REQUEST_REMATCH.code.toString() -> {
+            game.rematchRequested = true
+            sendToOpponent(game, session,  WSDataCode(StatusCode.REMATCH_REQUESTED))
+        }
+        StatusCode.ACCEPT_REMATCH.code.toString() -> {
+            if (game.rematchRequested) {
+                val newGameCode = Game.randomGameId()
+                sendToPlayers(game, WSDataCode(StatusCode.REMATCH_ACCEPTED, newGameCode))
+            }
+        }
+    }
+}
 
 private suspend fun removePlayerFromGame(game: Game?, session: DefaultWebSocketServerSession) {
     game?.let {
         val player = game.getPlayerBySession(session)
         player?.let {
-            game.getOpponent(player).session?.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_DISCONNECTED))
+            game.getOpponent(player).session?.sendSerialized(WSDataCode(StatusCode.OPPONENT_DISCONNECTED))
         }
         game.removePlayer(session)
         if (game.firstPlayer.session == null && game.secondPlayer.session == null){
@@ -60,55 +82,49 @@ private suspend fun removePlayerFromGame(game: Game?, session: DefaultWebSocketS
     }
 }
 
-
-private suspend fun handleIncomingFrame(
-    game: Game,
-    text: String
-) {
+private suspend fun handleIncomingFrame(game: Game, text: String) {
     val isValidMove = game.gameBoard.setSymbol(game.awaitMoveByPlayer, text.toInt())
     if (isValidMove) {
         game.awaitMoveByPlayer.session?.let {
-            it.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_ACCEPTED))
-            it.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
+            it.sendSerialized(WSDataCode(StatusCode.MOVE_ACCEPTED))
+            it.sendSerialized(WSDataCode(StatusCode.OPPONENT_MOVE))
         }
         println(game.awaitMoveByPlayer.session)
         game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer)
         println(game.awaitMoveByPlayer.session)
-        game.awaitMoveByPlayer.session?.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
+        game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.YOUR_MOVE))
 
-        sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
+        sendToPlayers(game, WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
 
     } else {
-        game.awaitMoveByPlayer.session?.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.MOVE_INVALID))
+        game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.MOVE_INVALID))
     }
+}
 
-    val winner = game.hasGameWinner()
+private suspend fun handleWinnerCheck(game: Game): Player? {
+    val winner: Player? = game.hasGameWinner()
     when (winner) {
         game.firstPlayer -> {
             sendToPlayers(
                 game,
-                toFirst = WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON),
-                toSecond = WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON)
+                toFirst = WSDataCode(StatusCode.YOU_WON),
+                toSecond = WSDataCode(StatusCode.OPPONENT_WON)
             )
         }
 
         game.secondPlayer -> {
             sendToPlayers(
                 game,
-                toFirst = WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_WON),
-                toSecond = WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOU_WON)
+                toFirst = WSDataCode(StatusCode.OPPONENT_WON),
+                toSecond = WSDataCode(StatusCode.YOU_WON)
             )
         }
     }
-    if (winner != null) {
-        // game close
-        // ask the players if they want another game... Same socket or new one?
-        game.firstPlayer.session!!.close()
-        game.secondPlayer.session!!.close()
-    }
+
+    return winner
 }
 
-private suspend fun sendToPlayers(game: Game, toFirst: WebSocketDataCode, toSecond: WebSocketDataCode? = null) {
+private suspend fun sendToPlayers(game: Game, toFirst: WSDataCode, toSecond: WSDataCode? = null) {
     game.firstPlayer.session?.sendSerialized(toFirst)
     when (toSecond){
         null -> game.secondPlayer.session?.sendSerialized(toFirst)
@@ -116,6 +132,11 @@ private suspend fun sendToPlayers(game: Game, toFirst: WebSocketDataCode, toSeco
     }
 }
 
+private suspend fun sendToOpponent(game: Game, session: DefaultWebSocketServerSession, data: WSDataCode){
+    val player = game.getPlayerBySession(session) ?: return
+    val opponent = game.getOpponent(player)
+    opponent.session?.sendSerialized(data)
+}
 
 @Suppress("ThrowsCount")
 private suspend fun assignPlayersToGame(game: Game, session: DefaultWebSocketServerSession) {
@@ -123,13 +144,13 @@ private suspend fun assignPlayersToGame(game: Game, session: DefaultWebSocketSer
         game.firstPlayer.session = session
 
         when (game.secondPlayer.isReady()) {
-            true -> sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.SECOND_PLAYER_CONNECTED))
+            true -> sendToPlayers(game, WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
             false -> {
-                sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_SECOND_PLAYER_YET))
+                sendToPlayers(game, WSDataCode(StatusCode.NO_SECOND_PLAYER_YET))
                 if (Controller.awaitPlayer(game).not()) {
                     throw TimeoutSecondPlayerException()
                 }
-                sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.SECOND_PLAYER_CONNECTED))
+                sendToPlayers(game, WSDataCode(StatusCode.SECOND_PLAYER_CONNECTED))
             }
         }
 
@@ -137,20 +158,20 @@ private suspend fun assignPlayersToGame(game: Game, session: DefaultWebSocketSer
         game.secondPlayer.session = session
 
         when (game.firstPlayer.isReady()) {
-            true -> sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.FIRST_PLAYER_CONNECTED))
+            true -> sendToPlayers(game, WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
             false -> {
-                sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.NO_FIRST_PLAYER_YET))
+                sendToPlayers(game, WSDataCode(StatusCode.NO_FIRST_PLAYER_YET))
                 if (Controller.awaitPlayer(game).not()) {
                     throw TimeoutSecondPlayerException()
                 }
-                sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.FIRST_PLAYER_CONNECTED))
+                sendToPlayers(game, WSDataCode(StatusCode.FIRST_PLAYER_CONNECTED))
             }
         }
 
     } else throw GameLobbyIsFullException()
 
     // Game can Start...
-    game.awaitMoveByPlayer.session?.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.YOUR_MOVE))
-    game.getOpponent(game.awaitMoveByPlayer).session?.sendSerialized(WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.OPPONENT_MOVE))
-    sendToPlayers(game, WebSocketDataCode(WebSocketDataCode.Companion.StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
+    game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.YOUR_MOVE))
+    game.getOpponent(game.awaitMoveByPlayer).session?.sendSerialized(WSDataCode(StatusCode.OPPONENT_MOVE))
+    sendToPlayers(game, WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
 }

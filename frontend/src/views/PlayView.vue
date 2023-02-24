@@ -21,9 +21,9 @@
         class="transition-all duration-700 flex flex-col md:flex-row max-w-xl content-center self-center items-center justify-center mx-auto space-x-2">
       <div
           class="flex-none mt-10 mx-auto inline-flex items-center gap-2 mt-5 text-sm font-medium text-blue-500 hover:text-blue-700">
-        <button type="button"
+        <button type="button" @click="requestRematch"
                 class="transition-all duration-700 py-[.688rem] px-4 mx-auto w-48 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-600 hover:bg-blue-700 text-white text-sm dark:focus:ring-offset-gray-800">
-          Request Rematch
+          {{ rematchBtnText }}
         </button>
       </div>
       <router-link @click="resetConnection" to="/"
@@ -43,13 +43,14 @@
 <script setup lang="ts">
 
 import {useWebSocketStore} from "@/stores/websocket";
-import {onMounted, ref} from "vue";
 import type {Ref} from 'vue'
+import {onMounted, ref} from "vue";
 import {ErrorCodes, MessageMap, WebSocketCodes} from "@/StatusCodes";
 import router from "@/router";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
 import IconCircle from "@/components/icons/IconCircle.vue";
 import IconCross from "@/components/icons/IconCross.vue";
+import {getBaseURL} from "@/getBaseURL";
 
 const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
 
@@ -57,6 +58,9 @@ const msg = ref("What have you expected to see?")
 const isMyMove = ref(false)
 const gameBoard: Ref<number[]> = ref([0, 0, 0, 0, 0, 0, 0, 0, 0])
 const hasGameWinner = ref(false)
+
+const rematchRequestAccept = ref(false)
+const rematchBtnText = ref("Request Rematch")
 
 let ws: WebSocket | null = null;
 
@@ -76,10 +80,21 @@ function timeoutReached(){
 function resetConnection() {
   ws?.close()
   useWebSocketStore().ws = null
+
+  isMyMove.value = false
+  hasGameWinner.value = false
+  rematchRequestAccept.value = false
+  rematchBtnText.value = "Request Rematch"
+  gameBoard.value = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 }
 
 function requestRematch() {
-  // ws?.send()
+  console.log(WebSocketCodes.REQUEST_REMATCH.toString())
+  if (!rematchRequestAccept.value){
+    ws?.send(WebSocketCodes.REQUEST_REMATCH.toString())
+  } else {
+    ws?.send(WebSocketCodes.ACCEPT_REMATCH.toString())
+  }
 }
 
 function sendWebSocketData(number: number) {
@@ -115,6 +130,22 @@ function startWebSocketListener() {
 
     if (webSocketData.statusCode == WebSocketCodes.GAME_BOARD) {
       gameBoard.value = JSON.parse(webSocketData.msg.replace(/'/g, '"'))
+    }
+
+    if (webSocketData.statusCode == WebSocketCodes.REMATCH_REQUESTED) {
+      rematchRequestAccept.value = true
+      rematchBtnText.value =  MessageMap.get(WebSocketCodes.REMATCH_REQUESTED)
+
+    }
+    if (webSocketData.statusCode == WebSocketCodes.REMATCH_ACCEPTED) {
+      resetConnection()
+
+      const gameCode = webSocketData.msg
+      const protocol = location.protocol == 'https:' ? "wss" : "ws"
+      useWebSocketStore().ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode}`)
+      ws = useWebSocketStore().ws
+      router.push({path: "/play", query: {gameCode: gameCode}})
+      startWebSocketListener()
     }
   }
 }
