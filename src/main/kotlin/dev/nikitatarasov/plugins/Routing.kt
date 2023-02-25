@@ -2,14 +2,18 @@ package dev.nikitatarasov.plugins
 
 import dev.nikitatarasov.Controller
 import dev.nikitatarasov.model.Game
-import io.ktor.http.*
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
-import io.ktor.server.application.*
-import io.ktor.server.http.content.*
-import java.time.LocalDateTime
-import java.time.Period
-import java.time.temporal.ChronoUnit
+import io.github.oshai.KotlinLogging
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.http.content.singlePageApplication
+import io.ktor.server.http.content.vue
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.routing
+
+private val logger = KotlinLogging.logger {}
 
 fun Application.configureRouting() {
     routing {

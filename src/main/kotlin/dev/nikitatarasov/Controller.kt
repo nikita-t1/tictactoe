@@ -1,6 +1,7 @@
 package dev.nikitatarasov
 
 import dev.nikitatarasov.model.Game
+import io.github.oshai.KotlinLogging
 import kotlinx.coroutines.delay
 import kotlinx.datetime.toJavaLocalDateTime
 import java.time.LocalDateTime
@@ -10,6 +11,7 @@ import kotlin.collections.LinkedHashSet
 
 object Controller {
 
+    private val logger = KotlinLogging.logger {}
     private val games: MutableSet<Game> = Collections.synchronizedSet(LinkedHashSet())
 
     fun getAllGames() = games as? Set<Game>
@@ -39,7 +41,7 @@ object Controller {
             getAllGames()
                 ?.filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
                 ?.forEach {
-                    println("Remove Game Code: ${it.id}")
+                    logger.info{"Remove Game Code: ${it.id}"}
                     removeGame(it)
                 }
         }

@@ -1,6 +1,9 @@
 package dev.nikitatarasov.model
 
+import io.github.oshai.KotlinLogging
 import kotlinx.serialization.Serializable
+
+private val logger = KotlinLogging.logger {}
 
 @Serializable
 class GameBoard {
@@ -63,7 +66,7 @@ class GameBoard {
             // |x| | |
             else if ( gamefield[0][2].equalsAll(gamefield[1][1], gamefield[2][0]) ) winningSymbol = gamefield[0][2]
 
-            print("symbol " + winningSymbol?.fieldToSymbol())
+            logger.info("symbol " + winningSymbol?.fieldToSymbol())
             return if (winningSymbol == null) null
             else if (firstPlayer.symbol == winningSymbol) firstPlayer
             else if (secondPlayer.symbol == winningSymbol) secondPlayer

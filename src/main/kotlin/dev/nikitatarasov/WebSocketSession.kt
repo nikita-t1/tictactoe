@@ -8,17 +8,20 @@ import dev.nikitatarasov.model.Game
 import dev.nikitatarasov.model.Player
 import dev.nikitatarasov.model.WebSocketDataCode as WSDataCode
 import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusCode
+import io.github.oshai.KotlinLogging
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.server.websocket.sendSerialized
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
 
+private val logger = KotlinLogging.logger {}
+
 @Suppress("NestedBlockDepth")
 suspend fun DefaultWebSocketServerSession.startSession(){
     var game: Game? = null
     try {
-        println("connect")
+        logger.info("connect")
         val gameCode = call.request.queryParameters["gameCode"]?.uppercase()
         if (gameCode.isNullOrBlank()) throw NoGameCodeException()
 
@@ -54,7 +57,7 @@ suspend fun DefaultWebSocketServerSession.startSession(){
 }
 
 private suspend fun handleRematchRequest(game: Game, text: String, session: DefaultWebSocketServerSession){
-    println(text)
+    logger.info(text)
     when (text) {
         StatusCode.REQUEST_REMATCH.code.toString() -> {
             game.rematchRequested = true
@@ -89,9 +92,9 @@ private suspend fun handleIncomingFrame(game: Game, text: String) {
             it.sendSerialized(WSDataCode(StatusCode.MOVE_ACCEPTED))
             it.sendSerialized(WSDataCode(StatusCode.OPPONENT_MOVE))
         }
-        println(game.awaitMoveByPlayer.session)
+        logger.info {game.awaitMoveByPlayer.session}
         game.awaitMoveByPlayer = game.getOpponent(game.awaitMoveByPlayer)
-        println(game.awaitMoveByPlayer.session)
+        logger.info {game.awaitMoveByPlayer.session}
         game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.YOUR_MOVE))
 
         sendToPlayers(game, WSDataCode(StatusCode.GAME_BOARD, game.gameBoard.toJSONList()))
