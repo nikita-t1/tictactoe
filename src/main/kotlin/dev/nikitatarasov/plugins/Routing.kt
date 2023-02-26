@@ -30,6 +30,9 @@ fun Application.configureRouting() {
         get("/gameCodes") {
             call.respond(Controller.getAllGames()!!.toList())
         }
+        get("/dev") {
+            call.respond(call.application.environment.developmentMode)
+        }
         singlePageApplication {
             useResources = true
             vue("dist")
