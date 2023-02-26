@@ -23,6 +23,10 @@ ktor {
     }
 }
 
+application {
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=true")
+}
+
 repositories {
     mavenCentral()
 }
