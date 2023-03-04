@@ -29,6 +29,7 @@ class WebSocketDataCode(
             @SerialName("4200") MOVE_ACCEPTED(4200),
             @SerialName("4201") YOU_WON(4201),
             @SerialName("4202") OPPONENT_WON(4202),
+            @SerialName("4203") GAME_ENDED_IN_DRAW(4203),
 
             @SerialName("4301") NO_FIRST_PLAYER_YET(4301),
             @SerialName("4302") NO_SECOND_PLAYER_YET(4302),

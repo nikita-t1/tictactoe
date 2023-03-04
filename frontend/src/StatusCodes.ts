@@ -15,6 +15,7 @@ enum WebSocketCodes {
     MOVE_ACCEPTED = 4200,
     YOU_WON = 4201,
     OPPONENT_WON = 4202,
+    GAME_ENDED_IN_DRAW = 4203,
 
     NO_FIRST_PLAYER_YET = 4301,
     NO_SECOND_PLAYER_YET = 4302,
@@ -50,6 +51,7 @@ MessageMap.set(WebSocketCodes.REMATCH_ACCEPTED, `Your opponent accepted the rema
 MessageMap.set(WebSocketCodes.MOVE_ACCEPTED, `This move was valid`)
 MessageMap.set(WebSocketCodes.YOU_WON, `You are the Winner`)
 MessageMap.set(WebSocketCodes.OPPONENT_WON, `Sorry, you lost the Game`)
+MessageMap.set(WebSocketCodes.GAME_ENDED_IN_DRAW, `The game ended in a draw`)
 
 MessageMap.set(WebSocketCodes.NO_SECOND_PLAYER_YET, `No second Player has joined this Game yet`)
 MessageMap.set(WebSocketCodes.OPPONENT_DISCONNECTED, `Your opponent has left the Game`)

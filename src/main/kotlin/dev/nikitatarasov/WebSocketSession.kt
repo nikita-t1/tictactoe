@@ -33,13 +33,14 @@ suspend fun DefaultWebSocketServerSession.startSession(){
             if (frame is Frame.Text) {
                 val text = frame.readText()
 
-                if (game.hasGameWinner() == null) { // Game is still going
+                if (game.hasGameWinner() == null && game.gameBoard.isBoardFull().not()) { // Game is still going
                     // If Move comes from expected Player
                     if (this == game.awaitMoveByPlayer.session) {
                         handleIncomingFrame(game, text)
 
                     } else this.sendSerialized(WSDataCode(StatusCode.NOT_YOUR_TURN))
                     handleWinnerCheck(game)
+                    handleGameBoardFullCheck(game)
                 } else { // Game is over
                     handleRematchRequest(game, text, this)
                 }
@@ -101,6 +102,12 @@ private suspend fun handleIncomingFrame(game: Game, text: String) {
 
     } else {
         game.awaitMoveByPlayer.session?.sendSerialized(WSDataCode(StatusCode.MOVE_INVALID))
+    }
+}
+
+private suspend fun handleGameBoardFullCheck(game: Game) {
+    if (game.gameBoard.isBoardFull()){
+        sendToPlayers(game, WSDataCode(StatusCode.GAME_ENDED_IN_DRAW))
     }
 }
 

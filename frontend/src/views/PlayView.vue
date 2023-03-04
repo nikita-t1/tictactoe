@@ -17,7 +17,7 @@
       </span>
     </div>
 
-    <div v-if="hasGameWinner"
+    <div v-if="hasGameEnded"
         class="transition-all duration-700 flex flex-col md:flex-row max-w-xl content-center self-center items-center justify-center mx-auto space-x-2">
       <div
           class="flex-none mt-10 mx-auto inline-flex items-center gap-2 mt-5 text-sm font-medium text-blue-500 hover:text-blue-700">
@@ -57,7 +57,7 @@ const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnecte
 const msg = ref("What have you expected to see?")
 const isMyMove = ref(false)
 const gameBoard: Ref<number[]> = ref([0, 0, 0, 0, 0, 0, 0, 0, 0])
-const hasGameWinner = ref(false)
+const hasGameEnded = ref(false)
 
 const rematchRequestAccept = ref(false)
 const rematchBtnText = ref("Request Rematch")
@@ -82,7 +82,7 @@ function resetConnection() {
   useWebSocketStore().ws = null
 
   isMyMove.value = false
-  hasGameWinner.value = false
+  hasGameEnded.value = false
   rematchRequestAccept.value = false
   rematchBtnText.value = "Request Rematch"
   gameBoard.value = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -112,8 +112,8 @@ function startWebSocketListener() {
       isMyMove.value = false
     }
 
-    if (webSocketData.statusCode == WebSocketCodes.YOU_WON || webSocketData.statusCode == WebSocketCodes.OPPONENT_WON){
-      hasGameWinner.value = true
+    if (webSocketData.statusCode == WebSocketCodes.YOU_WON || webSocketData.statusCode == WebSocketCodes.OPPONENT_WON || webSocketData.statusCode == WebSocketCodes.GAME_ENDED_IN_DRAW){
+      hasGameEnded.value = true
     }
 
     if (webSocketData.statusCode == WebSocketCodes.OPPONENT_DISCONNECTED){

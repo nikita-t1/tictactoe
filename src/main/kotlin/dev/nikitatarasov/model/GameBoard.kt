@@ -22,6 +22,10 @@ class GameBoard {
 
     }
 
+    fun isBoardFull(): Boolean{
+        return moves >= 10
+    }
+
     fun hasGameWinner(firstPlayer: Player, secondPlayer: Player): Player?{
         if (moves > 4){ // min 5 moves
             var winningSymbol: PlayerSymbol? = null
