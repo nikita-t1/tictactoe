@@ -1,0 +1,48 @@
+{
+  "home": "Home",
+  "about": "About",
+  "loading": "Loading",
+  "player": "Player",
+  "create_new_game": "Create New Game",
+  "create_new_game_desc": "Create a Game-Code to start a new Session",
+  "join_existing_game": "Join Existing Game",
+  "join_existing_game_desc": "Enter an already existing Game-Code",
+  "create_game_code": "Create Game Code",
+  "start_playing": "Start Playing",
+  "opponent_disconnected": "Opponent disconnected",
+  "opponent_disconnected_desc": "It seems like your opponent is no longer connected to the Game Server",
+  "wait_for_opponent_reconnect": "Waiting for Opponent to reconnect",
+  "close_game": "Close Game",
+
+  "ws_msg": {
+    "4000": "STATUS_OK",
+    "4001": "GAME_BOARD",
+
+    "4101": "The first Player has joined the Game",
+    "4102": "The second Player has joined the Game",
+    "4103": "It's your turn",
+    "4104": "It's your opponent's turn now",
+    "4106": "Your opponent requested a rematch",
+    "4108": "Your opponent accepted the rematch",
+
+    "4200": "This move was valid",
+    "4201": "You are the Winner",
+    "4202": "Sorry, you lost the Game",
+    "4203": "The game ended in a draw",
+
+    "4302": "No second Player has joined this Game yet",
+    "4303": "Your opponent has left the Game",
+
+    "4401": "It's not your turn. Be patient",
+    "4402": "This move is not allowed",
+    "4403": "The Game with this Code already has 2 Players",
+    "4504": "No GameCode was send with this request",
+    "4505": "No Game with this Code was found",
+    "4501": "Timeout reached before second player connected",
+    "4599": "Generic Exception"
+  },
+  "error_msg": {
+    "600": "Generic Exception",
+    "601": "The Websocket Connection seems to be null"
+  }
+}
