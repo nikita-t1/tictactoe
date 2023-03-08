@@ -1,0 +1,48 @@
+{
+  "home": "Start",
+  "about": "Über",
+  "player": "Spieler",
+  "loading": "Lädt",
+  "create_new_game": "Erstelle ein neues Spiel",
+  "create_new_game_desc": "Erstelle einen Spielcode um ein neues Spiel zu starten",
+  "join_existing_game": "Einem Spiel beitreten",
+  "join_existing_game_desc": "Gib einen existierenden Spielcode ein",
+  "create_game_code": "Erstelle einen Spielcode",
+  "start_playing": "Spielen",
+  "opponent_disconnected": "Gegner nicht mehr verbunden",
+  "opponent_disconnected_desc": "Dein Gegner ist nicht mehr mit dem Server verbunden",
+  "wait_for_opponent_reconnect": "Warte auf Verbindungsaufbau des Gegners",
+  "close_game": "Spiel schließen",
+
+  "ws_msg": {
+    "4000": "STATUS_OK",
+    "4001": "GAME_BOARD",
+
+    "4101": "Der erste Spieler ist dem Spiel beigetreten",
+    "4102": "Der zweite Spieler ist dem Spiel beigetreten",
+    "4103": "Du bist am Zug",
+    "4104": "Dein Gegner ist jetzt am Zug",
+    "4106": "Dein Gegner will eine Revanche",
+    "4108": "Dein Gegner hat den Rückkampf akzeptiert",
+
+    "4200": "Dein Zug war gültig",
+    "4201": "Du hast gewonnen",
+    "4202": "Du hast leider verloren",
+    "4203": "Das Spiel ended mit einem unentschieden",
+
+    "4302": "Noch ist kein zweiter Spieler diesem Spiel beigetreten",
+    "4303": "Dein Gegner hat das Spiel verlassen",
+
+    "4401": "Du bist nicht an der Reihe",
+    "4402": "Dieser Zug ist ungültig",
+    "4403": "Das Spiel mit diesem SPielcode hat schon zwei Spieler",
+    "4504": "Es wurde kein Spielcode mit dieser Anfrage mitgesendet",
+    "4505": "Es wurde kein Spiel mit diesem Spielcode gefunden",
+    "4501": "Timeout reached before second player connected",
+    "4599": "Generischer Fehler"
+  },
+  "error_msg": {
+    "600": "Generischer Fehler",
+    "601": "Es scheint keine 'WebSocket'-Verbindung zu existieren"
+  }
+}
