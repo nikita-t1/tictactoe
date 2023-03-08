@@ -14,19 +14,19 @@
           <!-- End Icon -->
 
           <h3 class="mb-2 text-2xl font-bold text-gray-800 dark:text-gray-200">
-            Opponent disconnected
+              {{ $t("opponent_disconnected")}}
           </h3>
           <p class="transition-all duration-700 text-gray-800 dark:text-white">
-            It seems like your opponent is no longer connected to the Game Server
+              {{ $t("opponent_disconnected_desc")}}
           </p>
 
           <div class="mt-6 flex justify-center gap-x-4">
             <a v-if="!countDownRanOut" class="py-2.5 px-4 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-gray-800 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800" href="#">
-              Waiting for Opponent to reconnect... ({{countDown}})
+                {{ $t("wait_for_opponent_reconnect")}}... ({{countDown}})
             </a>
             <router-link to="/" @click="reset">
               <button type="button" class="py-2.5 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" data-hs-overlay="#hs-sign-out-alert">
-                Close Game
+                  {{ $t("close_game")}}
               </button>
             </router-link>
           </div>
