@@ -16,6 +16,11 @@
                   <span class="hidden md:block">{{$t("about")}}</span>
               </button>
             </router-link>
+              <div>
+                  <select v-model="$i18n.locale" class="transition-all duration-700 py-3 px-4 pr-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 border-2 border-gray-200 hover:border-blue-600 dark:border-gray-700 dark:hover:border-blue-600">
+                      <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}</option>
+                  </select>
+              </div>
           </div>
 
       </nav>
