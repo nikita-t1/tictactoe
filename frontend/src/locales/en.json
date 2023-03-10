@@ -13,6 +13,7 @@
   "opponent_disconnected_desc": "It seems like your opponent is no longer connected to the Game Server",
   "wait_for_opponent_reconnect": "Waiting for Opponent to reconnect",
   "close_game": "Close Game",
+  "request_rematch": "Request Rematch",
 
   "ws_msg": {
     "4000": "STATUS_OK",

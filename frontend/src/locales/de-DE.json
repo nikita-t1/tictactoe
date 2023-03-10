@@ -13,6 +13,7 @@
   "opponent_disconnected_desc": "Dein Gegner ist nicht mehr mit dem Server verbunden",
   "wait_for_opponent_reconnect": "Warte auf Verbindungsaufbau des Gegners",
   "close_game": "Spiel schließen",
+  "request_rematch": "Revanche",
 
   "ws_msg": {
     "4000": "STATUS_OK",
