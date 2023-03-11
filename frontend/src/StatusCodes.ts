@@ -36,39 +36,4 @@ enum ErrorCodes {
     WEBSOCKET_IS_NULL = 601
 }
 
-const MessageMap = new Map()
-
-MessageMap.set(WebSocketCodes.STATUS_OK, `STATUS_OK`)
-MessageMap.set(WebSocketCodes.GAME_BOARD, `GAME_BOARD`)
-
-MessageMap.set(WebSocketCodes.FIRST_PLAYER_CONNECTED, `The first Player has joined the Game`)
-MessageMap.set(WebSocketCodes.SECOND_PLAYER_CONNECTED, `The second Player has joined the Game`)
-MessageMap.set(WebSocketCodes.YOUR_MOVE, `It's your turn`)
-MessageMap.set(WebSocketCodes.OPPONENT_MOVE, `It's your opponent's turn now`)
-MessageMap.set(WebSocketCodes.REMATCH_REQUESTED, `Your opponent requested a rematch`)
-MessageMap.set(WebSocketCodes.REMATCH_ACCEPTED, `Your opponent accepted the rematch`)
-
-MessageMap.set(WebSocketCodes.MOVE_ACCEPTED, `This move was valid`)
-MessageMap.set(WebSocketCodes.YOU_WON, `You are the Winner`)
-MessageMap.set(WebSocketCodes.OPPONENT_WON, `Sorry, you lost the Game`)
-MessageMap.set(WebSocketCodes.GAME_ENDED_IN_DRAW, `The game ended in a draw`)
-
-MessageMap.set(WebSocketCodes.NO_SECOND_PLAYER_YET, `No second Player has joined this Game yet`)
-MessageMap.set(WebSocketCodes.OPPONENT_DISCONNECTED, `Your opponent has left the Game`)
-
-MessageMap.set(WebSocketCodes.NOT_YOUR_TURN, `It's not your turn. Be patient`)
-MessageMap.set(WebSocketCodes.MOVE_INVALID, `This move is not allowed`)
-MessageMap.set(WebSocketCodes.GAME_ALREADY_HAS_TWO_PLAYERS, `The Game with this Code already has 2 Players`)
-MessageMap.set(WebSocketCodes.NO_GAMECODE_IN_QUERY, `No GameCode was send with this request`)
-MessageMap.set(WebSocketCodes.NO_GAME_WITH_THIS_CODE_FOUND, `No Game with this Code was found`)
-
-MessageMap.set(WebSocketCodes.GAME_CODE_TIMEOUT_REACHED, `Timeout reached before second player connected`)
-MessageMap.set(WebSocketCodes.GENERIC_EXCEPTION, `Generic Exception`)
-
-//////////////////////////////////////////////////
-
-MessageMap.set(ErrorCodes.GENERIC_ERROR, `Generic Exception`)
-MessageMap.set(ErrorCodes.WEBSOCKET_IS_NULL, `The Websocket Connection seems to be null`)
-
-
-export { WebSocketCodes, ErrorCodes, MessageMap}
+export { WebSocketCodes, ErrorCodes}

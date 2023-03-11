@@ -20,10 +20,14 @@
 
 <script setup lang="ts">
 
-import {ErrorCodes, MessageMap} from "@/StatusCodes";
+import {ErrorCodes} from "@/StatusCodes";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n()
+
 
 const hash = parseInt(location.hash.slice(1)) || ErrorCodes.GENERIC_ERROR
-const msg = MessageMap.get(hash)
+const msg = t("error_msg." + hash)
 
 </script>
 
