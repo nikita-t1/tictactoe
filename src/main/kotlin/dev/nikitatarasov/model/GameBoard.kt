@@ -23,7 +23,7 @@ class GameBoard {
     }
 
     fun isBoardFull(): Boolean{
-        return moves >= 10
+        return moves >= 9
     }
 
     fun hasGameWinner(firstPlayer: Player, secondPlayer: Player): Player?{
