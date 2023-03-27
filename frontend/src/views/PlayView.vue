@@ -54,6 +54,7 @@ import IconCircle from "@/components/icons/IconCircle.vue";
 import IconCross from "@/components/icons/IconCross.vue";
 import {getBaseURL} from "@/getBaseURL";
 import {useI18n} from "vue-i18n";
+import {onBeforeRouteLeave} from "vue-router";
 
 const {t} = useI18n()
 
@@ -77,6 +78,10 @@ onMounted(() => {
     } else {
         startWebSocketListener()
     }
+})
+
+onBeforeRouteLeave((to, from) => {
+    resetConnection()
 })
 
 function timeoutReached() {
