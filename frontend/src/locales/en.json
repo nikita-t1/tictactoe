@@ -3,6 +3,9 @@
   "about": "About",
   "loading": "Loading",
   "player": "Player",
+  "start_game": "Start Game",
+  "play_vs_computer": "Player vs Computer",
+  "play_vs_computer_desc": "Play against a Computer",
   "create_new_game": "Create New Game",
   "create_new_game_desc": "Create a Game-Code to start a new Session",
   "join_existing_game": "Join Existing Game",
@@ -14,6 +17,7 @@
   "wait_for_opponent_reconnect": "Waiting for Opponent to reconnect",
   "close_game": "Close Game",
   "request_rematch": "Request Rematch",
+  "replay": "Replay",
 
   "ws_msg": {
     "4000": "STATUS_OK",

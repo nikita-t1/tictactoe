@@ -155,7 +155,7 @@ function startWebSocketListener() {
             const protocol = location.protocol == 'https:' ? "wss" : "ws"
             useWebSocketStore().ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode}`)
             ws = useWebSocketStore().ws
-            router.push({path: "/play", query: {gameCode: gameCode}})
+            router.push({path: "/multiplayer/play", query: {gameCode: gameCode}})
             startWebSocketListener()
         }
     }

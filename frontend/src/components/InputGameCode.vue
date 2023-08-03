@@ -85,7 +85,7 @@ function startGame() {
         }
 
         if (webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED) {
-            router.push({path: "/play", query: {gameCode: gameCode.value}})
+            router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
         }
 
     }

@@ -3,6 +3,9 @@
   "about": "Über",
   "player": "Spieler",
   "loading": "Lädt",
+  "start_game": "Spiel starten",
+  "play_vs_computer": "Gegen Computer spielen",
+  "play_vs_computer_desc": "Spiele gegen einen Computer",
   "create_new_game": "Erstelle ein neues Spiel",
   "create_new_game_desc": "Erstelle einen Spielcode um ein neues Spiel zu starten",
   "join_existing_game": "Einem Spiel beitreten",
@@ -14,6 +17,7 @@
   "wait_for_opponent_reconnect": "Warte auf Verbindungsaufbau des Gegners",
   "close_game": "Spiel schließen",
   "request_rematch": "Revanche",
+  "replay": "Nochmal spielen",
 
   "ws_msg": {
     "4000": "STATUS_OK",
