@@ -89,7 +89,9 @@ function replay() {
     hasGameEnded.value = false
     isPlayerMove.value = Math.random() < 0.5 // Randomly decide who starts
     if (!isPlayerMove.value) {
-        computerSmartMove()
+        setTimeout(() => {
+            computerSmartMove()
+        }, 1500)
     }
 }
 
