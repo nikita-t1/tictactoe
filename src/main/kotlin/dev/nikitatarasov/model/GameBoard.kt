@@ -12,11 +12,11 @@ class GameBoard {
     private var moves: Int = 0
 
     fun setSymbol(player: Player, index: Int): Boolean{
-        moves++
         val row = (index-1)/3
         val col = (index-1)%3
         return if (gamefield[row][col] == PlayerSymbol.UNSET){
             gamefield[row][col] = player.symbol
+            moves++
             true
         } else false
 
