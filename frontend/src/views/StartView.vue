@@ -4,7 +4,7 @@
       <div class="flex flex-col bg-gray-50 dark:bg-slate-900 rounded-xl dark:border-gray-700 dark:shadow-slate-700/[.7]">
           <div class="rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:border-gray-700">
               <p class="mt-1 text-md font-bold text-gray-800 dark:text-white">
-                  Singleplayer
+                  {{ t("singleplayer") }}
               </p>
           </div>
           <div class="p-4 md:p-5 flex flex-col md:flex-row max-w-4xl content-center self-center items-center justify-center mx-auto space-x-0 md:space-x-8 space-y-6 md:space-y-0">
@@ -29,7 +29,7 @@
       <div class="flex flex-col bg-gray-50 dark:bg-slate-900 rounded-xl dark:border-gray-700 dark:shadow-slate-700/[.7]">
           <div class="rounded-t-xl py-3 px-4 md:py-4 md:px-5 dark:border-gray-700">
               <p class="mt-1 text-md font-bold text-gray-800 dark:text-white">
-                  Multiplayer
+                  {{ t("multiplayer") }}
               </p>
           </div>
           <div class="p-4 md:p-5 flex flex-col md:flex-row max-w-4xl content-center self-center items-center justify-center mx-auto space-x-0 md:space-x-8 space-y-6 md:space-y-0">

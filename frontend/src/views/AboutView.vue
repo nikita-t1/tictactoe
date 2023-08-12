@@ -20,20 +20,19 @@
             </div>
 
             <div class="text-start">
-                <h3 class="mt-10 text-2xl font-bold text-gray-800 dark:text-white">Overview</h3>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">This is a simple TicTacToe game made with Vue 3 and TailwindCSS on the frontend and Ktor with Kotlin on the backend.</p>
+                <h3 class="mt-10 text-2xl font-bold text-gray-800 dark:text-white">{{ t("overview") }}</h3>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">{{ t("overview_desc") }}</p>
             </div>
 
             <div class="text-start">
-                <h3 class="mt-10 text-2xl font-bold text-gray-800 dark:text-white">Motivation</h3>
-                <p class="mt-2 text-gray-600 dark:text-gray-400">The Goal of this Project is for me to learn new technologies and tools.
-                    This includes:</p>
+                <h3 class="mt-10 text-2xl font-bold text-gray-800 dark:text-white">{{ t("motivation") }}</h3>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">{{ t("motivation_desc") }}</p>
                 <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-400">
                     <li>
-                        First time using <KBD text="WebSockets"/>
+                        {{ t("first_time_using") }} <KBD text="WebSockets"/>
                     </li>
-                    <li>Getting more familiar with <KBD text="Vue.js"/></li>
-                    <li>Getting more familiar with <KBD text="TailwindCSS"/> and <KBD text="CSS"/> in general</li>
+                    <li>{{ t("getting_more_familiar_with") }} <KBD text="Vue.js"/></li>
+                    <li>{{ t("getting_more_familiar_with") }} <KBD text="TailwindCSS"/> {{ t("and") }} <KBD text="CSS"/> {{ t("in_general") }}</li>
                 </ul>
             </div>
 
@@ -50,8 +49,11 @@ div, h1, p, a{
 </style>
 <script setup lang="ts">
 import {computed} from "vue";
-import {useDark, usePreferredDark} from "@vueuse/core";
+import {useDark} from "@vueuse/core";
 import KBD from "@/components/KBD.vue";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n()
 
 const isDark = useDark()
 const favicon = computed(() => isDark.value ? '/tic-tac-toe_light.ico' : '/tic-tac-toe_dark.ico')
