@@ -1,5 +1,5 @@
 <template>
-    <div class="transition-all duration-700 flex flex-col h-screen items-center justify-center mx-auto">
+    <div class="transition-all duration-700 flex flex-col items-center justify-center mx-auto">
         <OpponentDisconnectedModal ref="OpponentDisconnectedModalRef" @timeout-reached.once="timeoutReached"/>
 
         <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">

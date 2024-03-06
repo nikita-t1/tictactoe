@@ -1,5 +1,5 @@
 <template>
-  <div class="flex max-w-4xl content-center self-center items-center justify-center mx-auto space-x-8 h-screen">
+  <div class="flex max-w-4xl content-center self-center items-center justify-center mx-auto space-x-8">
     <InputGameCode/>
   </div>
 </template>

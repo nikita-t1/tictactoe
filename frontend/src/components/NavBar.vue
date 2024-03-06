@@ -1,8 +1,8 @@
 <template>
-    <div class="absolute">
-        <header class="relative flex justify-start flex-nowrap z-50 w-full text-sm py-4">
+    <div class="">
+        <header class="flex justify-start flex-nowrap z-50 w-full text-sm py-4">
             <nav class="max-w-[85rem] w-full px-4 flex" aria-label="Global">
-                <div class="flex gap-5 mt-5 mt-0 pl-5"> <!-- flex-col md:flex-row -->
+                <div class="flex gap-5 mt-0 pl-5"> <!-- flex-col md:flex-row -->
                     <router-link class="" to="/">
                         <button type="button" class="transition-all duration-700 py-[.688rem] px-4 inline-flex justify-center items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-600 hover:text-white hover:bg-blue-600 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-blue-600">
                             <MaterialSymbolsHomeOutlineRounded/>

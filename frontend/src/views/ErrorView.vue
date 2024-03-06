@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[50rem] flex flex-col  justify-center mx-auto my-auto w-full h-screen">
+  <div class="max-w-[50rem] flex flex-col  justify-center mx-auto my-auto w-full">
 
     <div class="text-center py-10 px-4 sm:px-6 lg:px-8">
       <h1 class="block text-7xl font-bold text-gray-800 sm:text-9xl dark:text-white">{{hash}}</h1>

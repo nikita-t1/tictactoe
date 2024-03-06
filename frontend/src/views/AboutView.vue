@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-[50rem] flex flex-col justify-center mx-auto w-full h-screen">
+    <div class="max-w-[50rem] flex flex-col justify-center mx-auto w-full">
 
         <div class="text-center py-10 px-4 sm:px-6 lg:px-8">
             <div class="inline-flex text-center justify-center items-end gap-4">
