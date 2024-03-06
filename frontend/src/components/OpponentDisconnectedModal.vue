@@ -8,7 +8,8 @@
 
                 <div class="p-4 sm:p-10 text-center overflow-y-auto">
                     <!-- Icon -->
-                    <span class="mb-4 inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-yellow-50 bg-yellow-100 text-yellow-500 dark:bg-yellow-700 dark:border-yellow-600 dark:text-yellow-100">
+                    <span
+                        class="mb-4 inline-flex justify-center items-center w-[62px] h-[62px] rounded-full border-4 border-yellow-50 bg-yellow-100 text-yellow-500 dark:bg-yellow-700 dark:border-yellow-600 dark:text-yellow-100">
                       <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                            viewBox="0 0 16 16">
                         <path
@@ -33,7 +34,7 @@
                         <router-link to="/" @click="reset">
                             <button type="button"
                                     class="py-2.5 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
-                                    data-hs-overlay="#hs-sign-out-alert">
+                                    data-hs-overlay="#hs-opponentDisconnectedModal">
                                 {{ t("close_game") }}
                             </button>
                         </router-link>
@@ -48,8 +49,19 @@
 <script setup lang="ts">
 import {onBeforeUnmount, ref} from "vue";
 import {useI18n} from "vue-i18n";
+import {useWebSocketStore} from "@/stores/websocket";
+import {useEventBus} from "@vueuse/core";
 
-const emit = defineEmits(['timeoutReached'])
+const webSocketStore = useWebSocketStore()
+
+const opponentDisconnectedBus = useEventBus<boolean>('opponentDisconnected')
+opponentDisconnectedBus.on((e) => {
+    if (e) {
+        openModal()
+    } else {
+        opponentReConnected()
+    }
+})
 
 const {t} = useI18n()
 
@@ -76,7 +88,7 @@ function countDownDecrement() {
 }
 
 function timeoutReached() {
-    emit('timeoutReached')
+    webSocketStore.reset()
     countDownRanOut.value = true
 }
 
@@ -102,8 +114,13 @@ function openModal() {
 }
 
 function closeModal() {
+    console.log("Closing Modal");
     // Preline doesn't have TypeScript Support. See: https://github.com/htmlstreamofficial/preline/issues/28
-    (window as any).HSOverlay!.close(opponentDisconnectedModal.value)
+    (window as any).HSOverlay!.close(opponentDisconnectedModal.value);
+    console.log("Closing Modal2");
+    // const modal = (window as any).HSOverlay(document.querySelector('#modal'));
+    // console.log(modal);
+
 }
 
 defineExpose({openModal, opponentReConnected})

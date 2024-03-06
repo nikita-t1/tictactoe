@@ -53,6 +53,8 @@ import {getBaseURL} from "@/getBaseURL";
 import {WebSocketCodes} from "@/StatusCodes";
 import {useI18n} from "vue-i18n";
 
+const webSocketStore = useWebSocketStore()
+
 const {t} = useI18n()
 
 const gameCode = ref("")
@@ -67,28 +69,11 @@ onMounted(() => {
 
 
 function startGame() {
+    webSocketStore.init(gameCode.value)
+    webSocketStore.setBothPlayersConnectedCallback(() => {
+        router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
+    })
 
-    const protocol = location.protocol == 'https:' ? "wss" : "ws"
-    const ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode.value}`);
-    useWebSocketStore().ws = ws
-
-    ws.onmessage = (event) => {
-        console.log(event.data)
-        const webSocketData = JSON.parse(event.data)
-        currentStatusCode.value = webSocketData.statusCode
-
-        if (webSocketData.statusCode == WebSocketCodes.NO_SECOND_PLAYER_YET) {
-            // Server doesn't distinguish between first/second Player,
-            // but this Vue Component always belongs to the Second user and the second user doesn't have to wait for someone
-            currentStatusCode.value = WebSocketCodes.NO_GAME_WITH_THIS_CODE_FOUND.toString()
-            useWebSocketStore().ws?.close()
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED) {
-            router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
-        }
-
-    }
 }
 
 </script>
