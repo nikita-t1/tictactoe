@@ -1,17 +1,8 @@
 <template>
     <div class="transition-all duration-700 flex flex-col items-center justify-center mx-auto">
 
-        <!-- Game board -->
-        <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">
-            <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-                <div v-for="(item, index) in gameBoard" :key="index" class="field cursor-pointer"
-                     :class="{'cursor-not-allowed' : awaitingMoveBy != MOVE_BY_PLAYER}"
-                     @click="gameStore.playerMove(index)">
-                    <IconCross v-if="item === MOVE_BY_PLAYER"/>
-                    <IconCircle v-if="item === MOVE_BY_COMPUTER"/>
-                </div>
-            </div>
-        </div>
+        <GameBoard :gameBoard="gameBoard" :awaiting-move-by="awaitingMoveBy"
+                   @player-move="(index) => gameStore.playerMove(index)"/>
 
         <!-- Status message -->
         <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white">
@@ -47,12 +38,11 @@
 
 <script setup lang="ts">
 
-import IconCircle from "@/components/icons/IconCircle.vue";
-import IconCross from "@/components/icons/IconCross.vue";
+import GameBoard from "@/components/GameBoard.vue";
+
 import {useI18n} from "vue-i18n";
 import {useGameStore} from "@/stores/useGameStore";
 import {storeToRefs} from "pinia";
-import {MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "@/helper/GameBoardHelper";
 import {onMounted} from "vue";
 
 const {t} = useI18n()
@@ -63,9 +53,3 @@ onMounted(() => gameStore.replay())
 
 </script>
 
-<style scoped>
-.field {
-    @apply transition-all duration-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
-}
-
-</style>
