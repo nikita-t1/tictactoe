@@ -12,6 +12,11 @@ const props = defineProps({
 const emit = defineEmits<{
     (e: 'playerMove', index: number): void
 }>()
+
+function playerMove(index: number) {
+    if (props.awaitingMoveBy != MOVE_BY_PLAYER) return
+    emit('playerMove', index)
+}
 </script>
 
 <template>
@@ -19,7 +24,7 @@ const emit = defineEmits<{
         <div class="grid gap-x-4 gap-y-4 grid-cols-3">
             <div v-for="(item, index) in gameBoard" :key="index" class="field cursor-pointer"
                  :class="{'cursor-not-allowed' : awaitingMoveBy != MOVE_BY_PLAYER}"
-                 @click="emit('playerMove', index)">
+                 @click="playerMove( index)">
                 <IconCross v-if="item === MOVE_BY_PLAYER"/>
                 <IconCircle v-if="item === MOVE_BY_COMPUTER"/>
             </div>
