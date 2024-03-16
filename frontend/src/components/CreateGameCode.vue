@@ -73,6 +73,10 @@ function requestGameCode() {
                 router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
             })
         })
+        // .catch((error) => {
+        //     //TODO: show error message to user
+        //     console.error(error)
+        // })
 }
 
 </script>
