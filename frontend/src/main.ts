@@ -1,6 +1,5 @@
 import {computed, createApp} from 'vue'
 import {createPinia} from 'pinia'
-import {createI18n} from 'vue-i18n'
 
 import App from './App.vue'
 import router from './router'
@@ -8,18 +7,7 @@ import router from './router'
 import './assets/main.css'
 import "preline"
 import {useFavicon, usePreferredDark} from "@vueuse/core";
-
-import en from './locales/en.json'
-import de from './locales/de-DE.json'
-
-const i18n = createI18n({
-    legacy: false, // you must set `false`, to use Composition API
-    locale: 'en', // set locale
-    //fallbackLocale: 'en', // set fallback locale
-    messages: {en, de}, // set locale messages
-    // If you need to specify other options, you can set other options
-    // ...
-})
+import i18n from "@/plugins/i18n";
 
 const app = createApp(App)
 
