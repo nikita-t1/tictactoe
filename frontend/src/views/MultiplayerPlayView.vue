@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 
-import {useWebSocketStore} from "@/stores/websocket";
+import {useWebSocketStore} from "@/stores/websocketStore";
 import {onMounted, ref} from "vue";
 import {ErrorCodes, WebSocketCodes} from "@/StatusCodes";
 import router from "@/router";

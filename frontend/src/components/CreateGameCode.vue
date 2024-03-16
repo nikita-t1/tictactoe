@@ -12,7 +12,7 @@
                 <h3 class="transition-all duration-700 flex-none text-lg font-bold text-gray-800 dark:text-white">
                     Card title
                 </h3>
-                <p class="transition-all duration-700 grow flex mt-2 text-gray-500 dark:text-gray-400 text-6xl font-mono h-fill items-center content-center justify-center">
+                <p class="transition-all duration-700 grow flex mt-2 text-gray-500 dark:text-gray-400 text-6xl font-mono h-fill items-center content-center justify-center" id="gameCode">
                     {{ gameCode }}
                 </p>
                 <a class="transition-all duration-700 flex-none mt-3 mx-auto w-full inline-flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-700">
@@ -47,11 +47,13 @@
 <script setup lang="ts">
 import axios from 'axios';
 import {ref} from "vue";
-import router from "@/router";
-import {useWebSocketStore} from "@/stores/websocket";
 import {getBaseURLWithProtocol} from "@/getBaseURL";
 import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
+import {useRouter} from "vue-router";
+import {useWebSocketStore} from "@/stores/websocketStore";
+
+const router = useRouter()
 
 const gameCode = ref("----")
 

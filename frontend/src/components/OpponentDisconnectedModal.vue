@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {useWebSocketStore} from "@/stores/websocket";
+import {useWebSocketStore} from "@/stores/websocketStore";
 import {useEventBus} from "@vueuse/core";
 
 const webSocketStore = useWebSocketStore()
