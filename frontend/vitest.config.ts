@@ -10,7 +10,7 @@ export default defineConfig({
     ],
     // @ts-ignore
     test: {
-        globalThis: true,
+        // globals: true,
         environment: 'happy-dom'
         // ... Specify options here.
     },
