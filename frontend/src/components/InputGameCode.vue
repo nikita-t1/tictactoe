@@ -49,8 +49,6 @@ import type {Ref} from "vue";
 import {onMounted, ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocketStore";
-import {getBaseURL} from "@/getBaseURL";
-import {WebSocketCodes} from "@/StatusCodes";
 import {useI18n} from "vue-i18n";
 
 const webSocketStore = useWebSocketStore()
