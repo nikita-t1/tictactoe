@@ -1,6 +1,6 @@
 import {mount} from '@vue/test-utils'
 import SingleplayerPlayView from "../../src/views/SingleplayerPlayView.vue";
-import {useGameStore} from "../../src/stores/useGameStore";
+import {useSingleplayerGameStore} from "../../src/stores/useSingleplayerGameStore";
 import {describe, test, vi} from 'vitest'
 import {storeToRefs} from "pinia";
 import {options} from "../globalMocks";
@@ -11,13 +11,13 @@ import {EMPTY_BOARD_FIELD, MOVE_BY_PLAYER} from "../../src/helper/GameBoardHelpe
 describe('SingleplayerPlayView', () => {
 
     test('restart game on mount', ({expect}) => {
-        const gameStore = useGameStore()
+        const gameStore = useSingleplayerGameStore()
         mount(SingleplayerPlayView, options)
         expect(gameStore.replay).toHaveBeenCalledTimes(1)
     })
 
     test('renders correctly based on props', ({expect}) => {
-        const gameStore = useGameStore()
+        const gameStore = useSingleplayerGameStore()
         const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 
         currentStatusCode.value = WebSocketCodes.STATUS_OK
@@ -37,7 +37,7 @@ describe('SingleplayerPlayView', () => {
     })
 
     test('run functions on button clicks', ({expect}) => {
-        const gameStore = useGameStore()
+        const gameStore = useSingleplayerGameStore()
         const replaySpy = vi.spyOn(gameStore, 'replay')
         const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 

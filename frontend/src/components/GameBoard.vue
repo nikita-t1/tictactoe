@@ -2,7 +2,7 @@
 import IconCircle from "@/components/icons/IconCircle.vue";
 import IconCross from "@/components/icons/IconCross.vue";
 
-import {MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "@/helper/GameBoardHelper";
+import {MOVE_BY_OPPONENT, MOVE_BY_PLAYER} from "@/helper/GameBoardHelper";
 
 const props = defineProps({
     gameBoard: Array,
@@ -26,9 +26,10 @@ function playerMove(index: number) {
                  :class="{'cursor-not-allowed' : awaitingMoveBy != MOVE_BY_PLAYER}"
                  @click="playerMove( index)">
                 <IconCross v-if="item === MOVE_BY_PLAYER"/>
-                <IconCircle v-if="item === MOVE_BY_COMPUTER"/>
+                <IconCircle v-if="item === MOVE_BY_OPPONENT"/>
             </div>
         </div>
+        {{awaitingMoveBy === MOVE_BY_PLAYER ? "Your move" : "Opponent's move"}}
     </div>
 </template>
 

@@ -41,13 +41,13 @@
 import GameBoard from "@/components/GameBoard.vue";
 
 import {useI18n} from "vue-i18n";
-import {useGameStore} from "@/stores/useGameStore";
+import {useSingleplayerGameStore} from "@/stores/useSingleplayerGameStore";
 import {storeToRefs} from "pinia";
 import {onMounted} from "vue";
 
 const {t} = useI18n()
 
-const gameStore = useGameStore()
+const gameStore = useSingleplayerGameStore()
 const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 onMounted(() => gameStore.replay())
 

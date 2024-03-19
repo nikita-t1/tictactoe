@@ -1,5 +1,5 @@
 import { test } from "vitest"
-import {EMPTY_BOARD_FIELD, MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "../../src/helper/GameBoardHelper";
+import {EMPTY_BOARD_FIELD, MOVE_BY_OPPONENT as MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "../../src/helper/GameBoardHelper";
 import ComputerBrainHelper from "../../src/helper/ComputerBrainHelper";
 
 // replace "path-to-your-code" with the actual file location

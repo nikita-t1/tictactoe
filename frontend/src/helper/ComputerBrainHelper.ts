@@ -1,4 +1,4 @@
-import {EMPTY_BOARD_FIELD, MOVE_BY_COMPUTER, MOVE_BY_PLAYER, winConditions} from "@/helper/GameBoardHelper";
+import {EMPTY_BOARD_FIELD, MOVE_BY_OPPONENT as MOVE_BY_COMPUTER , MOVE_BY_PLAYER, winConditions} from "@/helper/GameBoardHelper";
 
 function computerMove(gameBoard: number[]): number[] {
     return computerSmartMove(gameBoard)

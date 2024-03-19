@@ -1,6 +1,7 @@
 export const EMPTY_BOARD_FIELD = 0;
 export const MOVE_BY_PLAYER = 1;
-export const MOVE_BY_COMPUTER = 2;
+// export const MOVE_BY_COMPUTER = 2;
+export const MOVE_BY_OPPONENT = 2;
 
 /**
  * Represents the win conditions for a game board.
@@ -54,7 +55,7 @@ export const checkWinner = (gameBoard: number[]): number => {
             return MOVE_BY_PLAYER
         }
         if (gameBoard[condition[0]] === 2 && gameBoard[condition[1]] === 2 && gameBoard[condition[2]] === 2) {
-            return MOVE_BY_COMPUTER
+            return MOVE_BY_OPPONENT
         }
     }
     return EMPTY_BOARD_FIELD

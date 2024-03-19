@@ -6,13 +6,13 @@ import {
     checkDraw,
     checkWinner,
     EMPTY_BOARD_FIELD,
-    MOVE_BY_COMPUTER,
+    MOVE_BY_OPPONENT,
     MOVE_BY_PLAYER,
     winConditions
 } from "@/helper/GameBoardHelper";
 
 
-export const useGameStore = defineStore('gameStore', () => {
+export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () => {
 
     const awaitingMoveBy = ref(EMPTY_BOARD_FIELD)
     const currentStatusCode = ref<null | WebSocketCodes>(null)
@@ -27,7 +27,7 @@ export const useGameStore = defineStore('gameStore', () => {
         gameBoardFields.value = Array(9).fill(EMPTY_BOARD_FIELD)
 
         const isPlayerMove = Math.random() < 0.5
-        awaitingMoveBy.value = isPlayerMove ? MOVE_BY_PLAYER : MOVE_BY_COMPUTER
+        awaitingMoveBy.value = isPlayerMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT
         updateStatusAndTriggerNextMove(awaitingMoveBy.value)
     }
 
@@ -73,7 +73,7 @@ export const useGameStore = defineStore('gameStore', () => {
         if (awaitingMoveBy.value !== MOVE_BY_PLAYER) return
         if (gameBoardFields.value[index] !== 0) return
         gameBoardFields.value[index] = MOVE_BY_PLAYER
-        awaitingMoveBy.value = MOVE_BY_COMPUTER
+        awaitingMoveBy.value = MOVE_BY_OPPONENT
         handleGameBoardChange()
     }
 
