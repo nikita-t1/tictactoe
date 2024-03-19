@@ -18,7 +18,13 @@ fun Application.configureSockets() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
-        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        contentConverter = KotlinxWebsocketSerializationConverter(
+            Json {
+                encodeDefaults = true
+                prettyPrint = true
+                isLenient = true
+            }
+        )
     }
 
     routing {

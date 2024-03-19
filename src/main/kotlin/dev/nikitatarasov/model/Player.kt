@@ -2,18 +2,19 @@ package dev.nikitatarasov.model
 
 import dev.nikitatarasov.serializer.UUIDSerializer
 import io.ktor.server.websocket.DefaultWebSocketServerSession
+import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.*
 
 @Serializable
 data class Player(
-    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
+//    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val symbol: PlayerSymbol,
 ) {
     @Transient var session: DefaultWebSocketServerSession? = null
 
-    fun isReady(): Boolean = session != null
+    fun isConnected(): Boolean = session != null //&& session!!.isActive
 }
 
 @Serializable

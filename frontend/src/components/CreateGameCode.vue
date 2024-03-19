@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div :class="statusCodeMessages != null ? 'visible opacity-100' : 'invisible opacity-0'"
+        <div :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'"
              class="transition-all duration-1000">
             <div class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white">
                 <div
@@ -34,7 +34,7 @@
                 </div>
                 <span
                     class="transition-all duration-700 ml-4 content-start justify-center text-gray-800 dark:text-white">
-                    {{ t("ws_msg." + statusCodeMessages) }} <!-- "ws_msg.4302" -->
+                    {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
                 </span>
 
             </div>
@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {getBaseURLWithProtocol} from "@/getBaseURL";
 import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
@@ -61,7 +61,7 @@ const {t} = useI18n()
 
 const webSocketStore = useWebSocketStore()
 
-const {statusCodeMessages} = storeToRefs(webSocketStore)
+const {currentStatusCode, bothPlayersConnected} = storeToRefs(webSocketStore)
 
 function requestGameCode() {
     axios.defaults.baseURL = getBaseURLWithProtocol()
@@ -69,14 +69,19 @@ function requestGameCode() {
         .then((response) => {
             gameCode.value = response.data
             webSocketStore.init(gameCode.value)
-            webSocketStore.setBothPlayersConnectedCallback(() => {
-                router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
-            })
         })
-        // .catch((error) => {
-        //     //TODO: show error message to user
-        //     console.error(error)
-        // })
+        .catch((error) => {
+            //TODO: show error message to user
+            console.error(error)
+        })
 }
+
+watch(bothPlayersConnected, (newValue) => {
+    if (newValue) {
+        router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
+    }
+}, {
+    immediate: true,
+})
 
 </script>

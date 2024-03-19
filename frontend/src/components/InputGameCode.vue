@@ -25,7 +25,8 @@
             </div>
         </div>
 
-        <div :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'" class="transition-all duration-1000">
+        <div :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'"
+             class="transition-all duration-1000">
             <div class="transition-all duration-700 flex mt-4 rounded-xl p-2 text-white">
                 <div
                     class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
@@ -45,13 +46,15 @@
 </template>
 
 <script setup lang="ts">
-import type {Ref} from "vue";
+import {type Ref, watch} from "vue";
 import {onMounted, ref} from "vue";
 import router from "@/router";
 import {useWebSocketStore} from "@/stores/websocketStore";
 import {useI18n} from "vue-i18n";
+import {storeToRefs} from "pinia";
 
 const webSocketStore = useWebSocketStore()
+const {bothPlayersConnected} = storeToRefs(webSocketStore)
 
 const {t} = useI18n()
 
@@ -68,11 +71,15 @@ onMounted(() => {
 
 function startGame() {
     webSocketStore.init(gameCode.value)
-    webSocketStore.setBothPlayersConnectedCallback(() => {
-        router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
-    })
-
 }
+
+watch(bothPlayersConnected, (newValue) => {
+    if (newValue) {
+        router.push({path: "/multiplayer/play", query: {gameCode: gameCode.value}})
+    }
+}, {
+    immediate: true,
+})
 
 </script>
 

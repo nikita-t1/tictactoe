@@ -1,6 +1,6 @@
 package dev.nikitatarasov.exceptions
 
-import dev.nikitatarasov.model.WebSocketDataCode.Companion.StatusCode as StatusCode
+import dev.nikitatarasov.model.StatusCode
 
 
 class NoGameCodeException(

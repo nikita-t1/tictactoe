@@ -1,6 +1,8 @@
 package dev.nikitatarasov.model
 
+import dev.nikitatarasov.util.GameBoardUtils
 import dev.nikitatarasov.util.now
+import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
@@ -13,12 +15,25 @@ data class Game(
     val secondPlayer: Player = Player(symbol = PlayerSymbol.NOUGHT),
 ) {
     val gameBoard: GameBoard = GameBoard()
-    var awaitMoveByPlayer: Player = firstPlayer
+    var awaitMoveByPlayer: Player = chooseRandomPlayer() // Randomly select who goes first
     val creationTime = LocalDateTime.now()
-    var rematchRequested = false
+    var rematchRequested: Player? = null
+
+    private fun chooseRandomPlayer(): Player {
+        return if (Random.nextBoolean()) firstPlayer else secondPlayer
+    }
+
+    fun bothPlayersConnected(): Boolean {
+        return firstPlayer.isConnected() && secondPlayer.isConnected()
+    }
 
     fun hasGameWinner(): Player? {
-        return gameBoard.hasGameWinner(firstPlayer, secondPlayer)
+        val symbol: PlayerSymbol = GameBoardUtils.checkWinner(gameBoard) ?: return null
+        return when (symbol) {
+            firstPlayer.symbol -> firstPlayer
+            secondPlayer.symbol -> secondPlayer
+            else -> null
+        }
     }
 
     fun removePlayer(session: DefaultWebSocketServerSession) {
@@ -27,20 +42,18 @@ data class Game(
     }
 
     fun getPlayerBySession(session: DefaultWebSocketServerSession): Player? {
-        return if (firstPlayer.session == session) {
-            firstPlayer
-        } else if (secondPlayer.session == session) {
-            secondPlayer
-        } else {
-            null
+        return when (session) {
+            firstPlayer.session -> firstPlayer
+            secondPlayer.session -> secondPlayer
+            else -> null
         }
     }
 
     fun getOpponent(player: Player): Player {
-        return if (player == firstPlayer) {
-            secondPlayer
-        } else {
-            firstPlayer
+        return when (player) {
+            firstPlayer -> secondPlayer
+            secondPlayer -> firstPlayer
+            else -> throw IllegalArgumentException("Player not found")
         }
     }
 
