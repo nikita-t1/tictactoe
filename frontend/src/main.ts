@@ -5,7 +5,6 @@ import App from './App.vue'
 import router from './router'
 
 import './assets/main.css'
-import "preline"
 import {useFavicon, usePreferredDark} from "@vueuse/core";
 import i18n from "@/plugins/i18n";
 
