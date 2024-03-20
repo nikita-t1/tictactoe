@@ -90,7 +90,20 @@ const mode = useColorMode({
     attribute: 'data-theme',
 })
 
-const {next} = useCycleList(['dark', 'light', 'auto'], {initialValue: mode})
+const isPepe = useStorage('isPepe', false) // returns Ref<boolean>
+function pepe(){
+    console.log("pepe")
+    isPepe.value = false
+    if (document.documentElement.style.backgroundImage !== 'url("/pepe.png")') {
+        isPepe.value = true
+        document.documentElement.style.backgroundImage = 'url("/pepe.png")';
+        document.documentElement.style.backgroundSize = '100px 100px';
+    } else {
+        isPepe.value = false
+        document.documentElement.style.backgroundImage = '';
+        document.documentElement.style.backgroundSize = '';
+    }
+}
 
 function setTheme(theme: string) {
     // @ts-ignore
