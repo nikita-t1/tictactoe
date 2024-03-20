@@ -34,7 +34,7 @@
                 </div>
                 <span
                     class="transition-all duration-700 ml-4 content-start justify-center text-gray-800 dark:text-white">
-                    {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
+                    {{ t(userMessage) }} <!-- "ws_msg.4302" -->
                 </span>
 
             </div>
@@ -61,7 +61,7 @@ const {t} = useI18n()
 
 const webSocketStore = useWebSocketStore()
 
-const {currentStatusCode, bothPlayersConnected} = storeToRefs(webSocketStore)
+const {currentStatusCode, bothPlayersConnected, userMessage} = storeToRefs(webSocketStore)
 
 function requestGameCode() {
     axios.defaults.baseURL = getBaseURLWithProtocol()

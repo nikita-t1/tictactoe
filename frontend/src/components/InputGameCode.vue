@@ -35,7 +35,7 @@
                 </div>
                 <span
                     class="transition-all duration-700 ml-4 content-start justify-center text-gray-800 dark:text-white">
-            {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
+            {{ t(userMessage) }} <!-- "ws_msg.4302" -->
       </span>
 
             </div>
@@ -54,7 +54,7 @@ import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
 
 const webSocketStore = useWebSocketStore()
-const {bothPlayersConnected} = storeToRefs(webSocketStore)
+const {bothPlayersConnected, userMessage} = storeToRefs(webSocketStore)
 
 const {t} = useI18n()
 

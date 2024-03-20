@@ -8,7 +8,7 @@
         <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white">
         <span :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'"
               class="transition-all duration-700 text-gray-800 dark:text-white">
-            {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
+            {{ t(userMessage) }} <!-- "ws_msg.4302" -->
          </span>
         </div>
 
@@ -18,7 +18,7 @@
                 class="flex-none mt-10 mx-auto inline-flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-700">
                 <button type="button" @click="webSocketStore.requestRematch()"
                         class="transition-all duration-700 py-[.688rem] px-4 mx-auto w-48 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-600 hover:bg-blue-700 text-white text-sm dark:focus:ring-offset-gray-800">
-                    {{ rematchRequested ? t("ws_msg." + WebSocketCodes.REMATCH_REQUESTED) : t("request_rematch") }}
+                    {{ rematchRequested ? t(userMessage) : t("request_rematch") }}
                 </button>
             </div>
             <router-link @click="webSocketStore.reset()" to="/"
@@ -51,8 +51,8 @@ const {t} = useI18n()
 const router = useRouter()
 
 const webSocketStore = useWebSocketStore()
-const {ws, gameBoard, hasGameEnded, isMyMove, rematchRequested, currentStatusCode, bothPlayersConnected} = storeToRefs(webSocketStore)
-const awaitingMoveBy = computed(() => isMyMove.value ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
+const {ws, gameBoard, hasGameEnded, isMyMove, rematchRequested, currentStatusCode, bothPlayersConnected,userMessage} = storeToRefs(webSocketStore)
+const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
 
 const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
 

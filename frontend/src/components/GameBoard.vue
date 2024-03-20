@@ -29,7 +29,6 @@ function playerMove(index: number) {
                 <IconCircle v-if="item === MOVE_BY_OPPONENT"/>
             </div>
         </div>
-        {{awaitingMoveBy === MOVE_BY_PLAYER ? "Your move" : "Opponent's move"}}
     </div>
 </template>
 

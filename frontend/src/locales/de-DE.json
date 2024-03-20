@@ -28,6 +28,15 @@
   "close_game": "Spiel schließen",
   "request_rematch": "Revanche",
   "replay": "Nochmal spielen",
+
+  "awaiting_opponent": "Warte auf Gegner",
+  "your_turn": "Dein Zug",
+  "opponents_turn": "Gegner ist am Zug",
+  "you_won": "Du hast gewonnen",
+  "you_lost": "Du hast verloren",
+  "game_draw": "Unentschieden",
+
+
   "ws_msg": {
     "4000": "STATUS_OK",
     "4001": "GAME_BOARD",
@@ -41,6 +50,7 @@
     "4201": "Du hast gewonnen",
     "4202": "Du hast leider verloren",
     "4203": "Das Spiel ended mit einem unentschieden",
+    "4300": "Noch ist kein Gegner diesem Spiel beigetreten",
     "4302": "Noch ist kein zweiter Spieler diesem Spiel beigetreten",
     "4303": "Dein Gegner hat das Spiel verlassen",
     "4401": "Du bist nicht an der Reihe",
