@@ -1,36 +1,103 @@
 <template>
-  <div>
-    <button @click="next()" aria-label="Switch Theme Button" id="theme-toggle" type="button"
-            class="transition-all duration-1000 group inline-block dark:text-gray-400 text-slate-700 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg p-1.5 m-2 absolute top-2 right-6">
-
-
-      <span class="invisible -top-1 right-14 w-16 text-center absolute z-10 group-hover:visible">Theme: {{mode}}</span>
-      <svg id="theme-toggle-dark-icon" class="w-8 h-8"
-           fill="currentColor"
-           viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-
-          <path v-if="mode === 'dark'" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-          <path v-if="mode === 'light'" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
-          <path v-if="mode === 'auto'" d="M3.5 2A1.5 1.5 0 002 3.5V15a3 3 0 106 0V3.5A1.5 1.5 0 006.5 2h-3zm11.753 6.99L9.5 14.743V6.257l1.51-1.51a1.5 1.5 0 012.122 0l2.121 2.121a1.5 1.5 0 010 2.122zM8.364 18H16.5a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-2.136l-6 6zM5 16a1 1 0 100-2 1 1 0 000 2z"/>
-
-      </svg>
-
-    </button>
-  </div>
+    <div class="inline-block rounded-lg p-1.5 m-2 absolute top-2 right-6">
+        <div class="drawer drawer-end ">
+            <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+            <div class="drawer-content " @click.right="pepe" @contextmenu.prevent>
+                <!-- Page content here -->
+                <label for="my-drawer-4" class="bg-base-100 drawer-button btn btn-ghost text-primary">
+                    <svg id="theme-toggle-dark-icon" class="w-8 h-8"
+                         fill="currentColor"
+                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.5 2A1.5 1.5 0 002 3.5V15a3 3 0 106 0V3.5A1.5 1.5 0 006.5 2h-3zm11.753 6.99L9.5 14.743V6.257l1.51-1.51a1.5 1.5 0 012.122 0l2.121 2.121a1.5 1.5 0 010 2.122zM8.364 18H16.5a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-2.136l-6 6zM5 16a1 1 0 100-2 1 1 0 000 2z"/>
+                    </svg>
+                </label>
+            </div>
+            <div class="drawer-side">
+                <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+                <div class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                    <!-- Sidebar content here -->
+                    <p v-for="theme in themes" :key="theme" class="w-full my-1">
+                        <button
+                            @click="setTheme(theme)"
+                            class="outline-base-content text-start outline-offset-4 w-full"
+                            data-set-theme={theme}
+                            data-act-class="[&_svg]:visible">
+                          <span
+                              :data-theme=theme
+                              class="bg-base-100 rounded-btn text-base-content block cursor-pointer font-sans">
+                            <span class="grid grid-cols-5 grid-rows-3">
+                              <span class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3">
+                                <span class="flex-grow text-sm">
+                                  {{ theme }}
+                                </span>
+                                <span class="flex h-full shrink-0 flex-wrap gap-1">
+                                  <span class="bg-primary rounded-badge w-2"/>
+                                  <span class="bg-secondary rounded-badge w-2"/>
+                                  <span class="bg-accent rounded-badge w-2"/>
+                                  <span class="bg-neutral rounded-badge w-2"/>
+                                </span>
+                              </span>
+                            </span>
+                          </span>
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import {useColorMode, useCycleList} from '@vueuse/core'
+import {useColorMode, useCycleList, useStorage} from '@vueuse/core'
+
+const themes = [
+    "light",
+    "dark",
+    "cupcake",
+    "bumblebee",
+    "emerald",
+    "corporate",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "valentine",
+    "halloween",
+    "garden",
+    "forest",
+    "aqua",
+    "lofi",
+    "pastel",
+    "fantasy",
+    "black",
+    "luxury",
+    "dracula",
+    "cmyk",
+    "autumn",
+    "business",
+    "acid",
+    "lemonade",
+    "night",
+    "coffee",
+    "winter",
+    "dim",
+    "nord",
+    "sunset",
+]
 
 const mode = useColorMode({
-  emitAuto: true,
-  selector: 'html',
-  attribute: 'class',
+    emitAuto: true,
+    selector: 'html',
+    attribute: 'data-theme',
 })
 
 const {next} = useCycleList(['dark', 'light', 'auto'], {initialValue: mode})
+
+function setTheme(theme: string) {
+    // @ts-ignore
+    mode.value = theme
+    document.documentElement.setAttribute('data-theme', theme)
+}
+
+
+const {next} = useCycleList(themes, {initialValue: mode})
 </script>
-
-<style scoped>
-
-</style>

@@ -20,13 +20,13 @@ function playerMove(index: number) {
 </script>
 
 <template>
-    <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">
+    <div class="max-w-4xl space-x-8 space-y-4">
         <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-            <div v-for="(item, index) in gameBoard" :key="index" class="field cursor-pointer"
+            <div v-for="(item, index) in gameBoard" :key="index" class="field cursor-pointer rounded-box"
                  :class="{'cursor-not-allowed' : awaitingMoveBy != MOVE_BY_PLAYER}"
                  @click="playerMove( index)">
-                <IconCross v-if="item === MOVE_BY_PLAYER"/>
-                <IconCircle v-if="item === MOVE_BY_OPPONENT"/>
+                <IconCross class="text-primary" v-if="item === MOVE_BY_PLAYER"/>
+                <IconCircle class="text-primary" v-if="item === MOVE_BY_OPPONENT"/>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@ function playerMove(index: number) {
 
 <style scoped>
 .field {
-    @apply transition-all duration-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
+    @apply bg-base-200 border border-primary aspect-square w-32 flex h-full justify-center content-center items-center text-6xl
 }
 
 </style>

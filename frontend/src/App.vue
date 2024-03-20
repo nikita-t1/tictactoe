@@ -5,7 +5,7 @@ import NavBar from "@/components/NavBar.vue";
 </script>
 
 <template>
-  <div class="transition-all duration-700 bg-gray-50 dark:bg-slate-900 h-screen flex flex-col">
+  <div class="transition-all duration-700 h-screen flex flex-col">
     <NavBar />
     <ThemeToggle />
     <RouterView class="grow"/>
