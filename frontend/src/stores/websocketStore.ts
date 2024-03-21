@@ -15,6 +15,8 @@ export const useWebSocketStore = defineStore('websocket', () => {
     const userMessage: Ref<string> = ref("awaiting_opponent")
 
     const bothPlayersConnected = ref(false)
+    const opponentDisconnected = ref(true)
+
     const playerNumber = ref(0)
     const isMyMove = ref(false)
     const gameBoard: Ref<number[]> = ref([0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -57,7 +59,14 @@ export const useWebSocketStore = defineStore('websocket', () => {
         gameBoard.value = webSocketData.gameBoard
         hasGameEnded.value = webSocketData.hasGameEnded
         console.log("Both players connected: ", webSocketData.bothPlayersConnected)
+
+        // Opponent disconnected during the game
+        if (!webSocketData.bothPlayersConnected && bothPlayersConnected.value) {
+            handleOpponentDisconnected()
+        }
+
         bothPlayersConnected.value = webSocketData.bothPlayersConnected
+        opponentDisconnected.value = !webSocketData.bothPlayersConnected
 
         updateUserMessage(webSocketData.statusCode)
         updateUserErrorMessage(webSocketData)
@@ -117,6 +126,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
         }
     }
 
+    function handleOpponentDisconnected() {
+        opponentDisconnected.value = true
+    }
+
     function updateUserErrorMessage(webSocketData: WebSocketResponse) {
         // TODO: Implement error handling
     }
@@ -139,6 +152,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
         hasGameEnded.value = false
         rematchRequested.value = false
         bothPlayersConnected.value = false
+        opponentDisconnected.value = true
         ws.value?.close()
     }
 
@@ -148,6 +162,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
         currentStatusCode,
         userMessage,
         bothPlayersConnected,
+        opponentDisconnected,
         ws,
         gameCode,
         isMyMove,

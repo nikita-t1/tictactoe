@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center mx-auto">
-        <OpponentDisconnectedModal ref="OpponentDisconnectedModalRef"/>
+        <OpponentDisconnectedModal />
 
         <GameBoard :gameBoard="gameBoard" :awaiting-move-by="awaitingMoveBy"
                    @player-move="(index) => playerMove(index)"/>
@@ -37,8 +37,8 @@
 <script setup lang="ts">
 
 import {useWebSocketStore} from "@/stores/websocketStore";
-import {computed, onMounted, ref, watch} from "vue";
-import {ErrorCodes, WebSocketCodes} from "@/StatusCodes";
+import {computed, onMounted} from "vue";
+import {ErrorCodes} from "@/StatusCodes";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
 import {useI18n} from "vue-i18n";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
@@ -50,10 +50,8 @@ const {t} = useI18n()
 const router = useRouter()
 
 const webSocketStore = useWebSocketStore()
-const {ws, gameBoard, hasGameEnded, isMyMove, rematchRequested, currentStatusCode, bothPlayersConnected,userMessage} = storeToRefs(webSocketStore)
+const {ws, gameBoard, hasGameEnded, isMyMove, rematchRequested, currentStatusCode,userMessage} = storeToRefs(webSocketStore)
 const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
-
-const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
 
 function playerMove(index: number) {
     console.log(`playerMove(${index+1})`)
