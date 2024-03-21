@@ -15,7 +15,8 @@ import {
 export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () => {
 
     const awaitingMoveBy = ref(EMPTY_BOARD_FIELD)
-    const currentStatusCode = ref<null | WebSocketCodes>(null)
+    // const currentStatusCode = ref<null | WebSocketCodes>(null)
+    const userMessage = ref('')
     const gameBoardFields = ref(Array(9).fill(EMPTY_BOARD_FIELD))
     const hasGameEnded = ref(false)
 
@@ -38,7 +39,7 @@ export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () 
      */
     function updateStatusAndTriggerNextMove(awaitingMoveBy: number) {
         const isPlayerTurn = (awaitingMoveBy === MOVE_BY_PLAYER)
-        currentStatusCode.value = isPlayerTurn ? WebSocketCodes.YOUR_MOVE : WebSocketCodes.OPPONENT_MOVE
+        userMessage.value = isPlayerTurn ? 'your_turn' : 'opponents_turn'
         if (!isPlayerTurn) {
             setTimeout(() => {
                 computerMove()
@@ -85,14 +86,14 @@ export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () 
      */
     function handleGameBoardChange() {
         if (checkDraw(gameBoardFields.value)) {
-            currentStatusCode.value = WebSocketCodes.GAME_ENDED_IN_DRAW
+            userMessage.value = 'game_draw'
             hasGameEnded.value = true
             return
         }
 
         const winner = checkWinner(gameBoardFields.value)
         if (winner !== EMPTY_BOARD_FIELD) {
-            currentStatusCode.value = (winner === MOVE_BY_PLAYER ? WebSocketCodes.YOU_WON : WebSocketCodes.OPPONENT_WON)
+            userMessage.value = (winner === MOVE_BY_PLAYER ? 'you_won' : 'you_lost')
             hasGameEnded.value = true
             return
         }
@@ -109,7 +110,7 @@ export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () 
 
     return {
         awaitingMoveBy,
-        currentStatusCode,
+        userMessage,
         gameBoard: gameBoardFields,
         hasGameEnded,
         winConditions,

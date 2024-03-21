@@ -3,7 +3,7 @@
         class="flex flex-col max-w-4xl content-center self-center items-center justify-center mx-auto space-x-0 space-y-6">
 
         <!-- Category: Singleplayer -->
-        <div class="rounded-box flex flex-col border-base-300">
+        <div class="rounded-box flex flex-col border-base-300 bg-base-100">
 
             <p class="mt-1 text-md font-bold py-3 px-4 md:py-4 md:px-5">
                 {{ t("singleplayer") }}
@@ -24,12 +24,11 @@
                         </button>
                     </router-link>
                 </div>
-
             </div>
         </div>
 
         <!-- Category: Multiplayer -->
-        <div class="rounded-box flex flex-col border-base-300">
+        <div class="rounded-box flex flex-col border-base-300 bg-base-100">
             <p class="mt-1 text-md font-bold rounded-t-xl py-3 px-4 md:py-4 md:px-5 border-base-300">
                 {{ t("multiplayer") }}
             </p>

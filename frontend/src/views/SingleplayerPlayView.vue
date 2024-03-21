@@ -6,10 +6,7 @@
 
         <!-- Status message -->
         <div class=" w-96 mt-4 p-2 text-center bg-base-100">
-            <span :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'"
-                  class=''>
-            {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
-         </span>
+            {{ t(userMessage) }}
         </div>
 
         <!-- Replay and Home buttons -->
@@ -48,7 +45,7 @@ import {onMounted} from "vue";
 const {t} = useI18n()
 
 const gameStore = useSingleplayerGameStore()
-const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
+const {userMessage, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 onMounted(() => gameStore.replay())
 
 </script>
