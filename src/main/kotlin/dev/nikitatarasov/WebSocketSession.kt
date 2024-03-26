@@ -49,7 +49,16 @@ suspend fun DefaultWebSocketServerSession.startSession() {
     } catch (e: Exception) {
         e.printStackTrace()
     } finally {
+
+        val disconnectedPlayer = game?.getPlayerBySession(this)
+        val stillConnectedPlayer = game?.getOpponent(disconnectedPlayer!!)
         game?.removePlayer(this)
+        // check if the other player is still connected
+        if (stillConnectedPlayer?.isConnected() == true) {
+            response = buildResponse(game!!, stillConnectedPlayer, StatusCode.OPPONENT_DISCONNECTED)
+            sendToPlayer(stillConnectedPlayer.session!!, response)
+        }
+
         this.close()
     }
 }
