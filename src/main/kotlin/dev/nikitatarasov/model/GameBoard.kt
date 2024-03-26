@@ -4,9 +4,7 @@ import io.github.oshai.KotlinLogging
 import kotlinx.serialization.Serializable
 
 /**
- * Represents the game board for Tic Tac Toe.
- *
- * @property gameField The 3x3 grid representing the game board.
+ * Represents the game board for Tic-Tac-Toe.
  */
 @Serializable
 class GameBoard {

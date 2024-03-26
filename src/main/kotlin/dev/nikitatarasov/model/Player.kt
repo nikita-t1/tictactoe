@@ -7,9 +7,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.*
 
+/**
+ * Represents a player in the Tic-Tac-Toe game.
+ *
+ * @property symbol The symbol assigned to the player.
+ * @property session The WebSocket session associated with the player. Can be null if the player is not connected.
+ */
 @Serializable
 data class Player(
-//    @Serializable(with = UUIDSerializer::class) val id: UUID = UUID.randomUUID(),
     val symbol: PlayerSymbol,
 ) {
     @Transient var session: DefaultWebSocketServerSession? = null

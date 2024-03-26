@@ -6,9 +6,20 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
 
+/**
+ * Represents a Tic Tac Toe game.
+ *
+ * @property id The unique ID of the game.
+ * @property firstPlayer The first player of the game.
+ * @property secondPlayer The second player of the game.
+ * @property gameBoard The game board of the game.
+ * @property awaitMoveByPlayer The player whose move is awaited.
+ * @property creationTime The time when the game was created.
+ * @property rematchRequested The players who requested or accepted a rematch.
+ */
 @Serializable
 data class Game(
-    val id: String = randomGameId(),
+    val id: String,
     val firstPlayer: Player = Player(symbol = PlayerSymbol.CROSS),
     val secondPlayer: Player = Player(symbol = PlayerSymbol.NOUGHT),
 ) {
@@ -51,15 +62,6 @@ data class Game(
             firstPlayer -> secondPlayer
             secondPlayer -> firstPlayer
             else -> throw IllegalArgumentException("Player not found")
-        }
-    }
-
-    companion object {
-        private val charPool: List<Char> = ('A'..'Z') + ('0'..'9')
-        fun randomGameId(): String {
-            return (1..4)
-                .map { Random.nextInt(0, charPool.size).let { charPool[it] } }
-                .joinToString("")
         }
     }
 

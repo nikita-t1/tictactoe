@@ -8,9 +8,13 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
+/**
+ * The GameStorage class provides storage and operations for managing Tic Tac Toe games.
+ */
 object GameStorage {
 
     private val logger = KotlinLogging.logger {}
+
     private val games: MutableSet<Game> = Collections.synchronizedSet(LinkedHashSet())
 
     fun getAllGames() = games.toSet()
@@ -39,6 +43,13 @@ object GameStorage {
         }
     }
 
+    /**
+     * Removes expired games from the game storage.
+     *
+     * This method is executed on every new gameCode creation.
+     *
+     * @param expirationTime The expiration time in minutes. Default value is 60 minutes.
+     */
     fun removeExpiredGames(expirationTime: Int = 60){
         synchronized(games) {
             getAllGames()

@@ -8,10 +8,25 @@ import dev.nikitatarasov.model.PlayerSymbol
 import dev.nikitatarasov.util.GameBoardUtils.checkWinner
 import io.ktor.server.websocket.*
 import kotlinx.coroutines.delay
+import kotlin.random.Random
 
+/**
+ * GameService class is responsible for handling game-related operations.
+ */
 object GameService {
 
+    /**
+     * Represents the timeout duration in milliseconds for awaiting a player's connection.
+     *
+     * The timeout duration is set to 5 minutes. If a player does not connect within this duration, the game will be closed/removed.
+     */
     const val AWAIT_PLAYER_TIMEOUT_MS = 1000 * 60 * 5 // 5 min
+
+    /**
+     * Represents a pool of characters used for generating random game IDs.
+     * The pool contains uppercase letters (A-Z) and digits (0-9).
+     */
+    private val charPool: List<Char> = ('A'..'Z') + ('0'..'9')
 
     fun findGame(gameCode: String): Game? {
         return GameStorage.findGame(gameCode)
@@ -20,22 +35,13 @@ object GameService {
     fun generateGameCode(): String {
         var gameCode: String
         do {
-            gameCode = Game.randomGameId()
+            gameCode = randomGameId()
         } while (findGame(gameCode) != null)
         return gameCode
     }
 
     fun findOrCreateGame(gameCode: String): Game {
         return GameStorage.findOrCreateGame(gameCode)
-    }
-
-    fun hasGameWinner(game: Game): Player? {
-        val symbol: PlayerSymbol = checkWinner(game.gameBoard) ?: return null
-        return when (symbol) {
-            game.firstPlayer.symbol -> game.firstPlayer
-            game.secondPlayer.symbol -> game.secondPlayer
-            else -> null
-        }
     }
 
     suspend fun connectPlayerToGame(game: Game, session: DefaultWebSocketServerSession): Player {
@@ -46,7 +52,6 @@ object GameService {
     private fun assignPlayerToGame(game: Game, session: DefaultWebSocketServerSession): Player {
         lateinit var player: Player
 
-        // Assign player to game
         if (game.firstPlayer.isConnected().not()) {
             player = game.firstPlayer
             player.session = session
@@ -57,6 +62,14 @@ object GameService {
         return player
     }
 
+    /**
+     * Suspends the coroutine until the opponent of the player in the game is connected.
+     * If the opponent is already connected, this method returns immediately.
+     *
+     * @param game The Tic Tac Toe game.
+     * @param player The player whose opponent needs to be awaited.
+     * @throws TimeoutSecondPlayerException if the second player does not join before the timeout.
+     */
     suspend fun awaitOpponent(game: Game, player: Player) {
         if (game.getOpponent(player).isConnected()) return
         if (awaitPlayer(game).not()) {
@@ -64,6 +77,12 @@ object GameService {
         }
     }
 
+    /**
+     * Suspends the execution of the coroutine until the specified player in the game is connected.
+     *
+     * @param game The Tic Tac Toe game.
+     * @return Returns true if the player is connected within the timeout period, false otherwise.
+     */
     private suspend inline fun awaitPlayer(game: Game): Boolean {
         val playerToAwait = if (game.firstPlayer.isConnected()) game.secondPlayer else game.firstPlayer
         val timeout = System.currentTimeMillis() + AWAIT_PLAYER_TIMEOUT_MS
@@ -76,4 +95,12 @@ object GameService {
         }
         return true
     }
+
+
+    private fun randomGameId(): String {
+        return (1..4)
+            .map { Random.nextInt(0, charPool.size).let { charPool[it] } }
+            .joinToString("")
+    }
+
 }

@@ -19,7 +19,6 @@ suspend fun DefaultWebSocketServerSession.startSession() {
     var response: WebSocketResponse
     var responses: Pair<WebSocketResponse, WebSocketResponse>
     try {
-        logger.info("connect")
         val gameCode = call.request.queryParameters["gameCode"]?.uppercase()
         if (gameCode.isNullOrBlank()) throw NoGameCodeException()
         game = GameStorage.findOrCreateGame(gameCode)
@@ -71,17 +70,19 @@ suspend fun DefaultWebSocketServerSession.startSession() {
  * @param game The game object
  */
 private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Game) {
+    var counter = 0
 
     for (frame in incoming) {
         if (frame is Frame.Text) {
+            logger.trace { "Frame #${++counter}" }
             val request = Json.decodeFromString<WebSocketRequest>(frame.readText())
-            logger.info { "Received: $request" }
+            logger.debug { "Received: $request" }
             val player = game.getPlayerBySession(this)!!
 
             if (checkGameOver(game.gameBoard)){
                 // if we get a message after the game is over, it MUST be a rematch request
                 handleRematchRequest(game, request)
-                continue
+                continue // skip the rest of this frame
             }
 
             /**
@@ -98,7 +99,6 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
                 // the exact end condition will be evaluated client-side
                 val responses = buildResponses(game, StatusCode.GAME_ENDED)
                 sendToBothPlayers(game, responses.first, responses.second)
-                //TODO: implement rematch
                 continue // skip the rest of this frame
             }
         }
