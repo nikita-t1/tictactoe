@@ -1,12 +1,10 @@
 package dev.nikitatarasov.model
 
-import dev.nikitatarasov.util.GameBoardUtils
 import dev.nikitatarasov.util.now
-import io.ktor.server.sessions.*
+import io.ktor.server.websocket.*
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
-import io.ktor.server.websocket.DefaultWebSocketServerSession
 
 @Serializable
 data class Game(
@@ -17,7 +15,7 @@ data class Game(
     val gameBoard: GameBoard = GameBoard()
     var awaitMoveByPlayer: Player = chooseRandomPlayer() // Randomly select who goes first
     val creationTime = LocalDateTime.now()
-    var rematchRequested: Player? = null
+    var rematchRequested: MutableSet<Player> = mutableSetOf()
 
     private fun chooseRandomPlayer(): Player {
         return if (Random.nextBoolean()) firstPlayer else secondPlayer
@@ -25,15 +23,6 @@ data class Game(
 
     fun bothPlayersConnected(): Boolean {
         return firstPlayer.isConnected() && secondPlayer.isConnected()
-    }
-
-    fun hasGameWinner(): Player? {
-        val symbol: PlayerSymbol = GameBoardUtils.checkWinner(gameBoard) ?: return null
-        return when (symbol) {
-            firstPlayer.symbol -> firstPlayer
-            secondPlayer.symbol -> secondPlayer
-            else -> null
-        }
     }
 
     fun removePlayer(session: DefaultWebSocketServerSession) {
@@ -46,6 +35,14 @@ data class Game(
             firstPlayer.session -> firstPlayer
             secondPlayer.session -> secondPlayer
             else -> null
+        }
+    }
+
+    fun getPlayerBySymbol(symbol: Int): Player {
+        return when (symbol) {
+            firstPlayer.symbol.fieldToInt() -> firstPlayer
+            secondPlayer.symbol.fieldToInt() -> secondPlayer
+            else -> throw IllegalArgumentException("Player not found")
         }
     }
 

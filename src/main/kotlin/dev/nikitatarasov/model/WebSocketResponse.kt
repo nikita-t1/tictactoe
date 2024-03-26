@@ -16,7 +16,7 @@ data class WebSocketResponse(
     val hasGameEnded: Boolean = false,
     val awaitMoveFromPlayer: Int = -1,
     val bothPlayersConnected: Boolean = false,
-    val rematchRequestedByPlayer: Int = -1,
+    val rematchRequestedByPlayer: MutableSet<Int> = mutableSetOf(),
 ) {
     companion object {
         fun buildResponse(game: Game, player: Player, statusCode: StatusCode): WebSocketResponse {
@@ -28,7 +28,7 @@ data class WebSocketResponse(
                 hasGameEnded = GameBoardUtils.checkGameOver(game.gameBoard),
                 awaitMoveFromPlayer = game.awaitMoveByPlayer.symbol.fieldToInt(),
                 bothPlayersConnected = game.bothPlayersConnected(),
-                rematchRequestedByPlayer = game.rematchRequested?.symbol?.fieldToInt() ?: 0
+                rematchRequestedByPlayer = game.rematchRequested.map { it.symbol.fieldToInt() }.toMutableSet()
             )
             logger.info { "Built response: $response" }
             return response
@@ -43,7 +43,7 @@ data class WebSocketResponse(
                 hasGameEnded = GameBoardUtils.checkGameOver(game.gameBoard),
                 awaitMoveFromPlayer = game.awaitMoveByPlayer.symbol.fieldToInt(),
                 bothPlayersConnected = game.bothPlayersConnected(),
-                rematchRequestedByPlayer = game.rematchRequested?.symbol?.fieldToInt() ?: 0
+                rematchRequestedByPlayer = game.rematchRequested.map { it.symbol.fieldToInt() }.toMutableSet()
             )
             val opponentResponse = playerResponse.copy(playerNumber = game.secondPlayer.symbol.fieldToInt())
             logger.info { "Built responses: $playerResponse to $opponentResponse" }
@@ -51,7 +51,4 @@ data class WebSocketResponse(
         }
     }
 
-    fun WebSocketResponse.withPlayerNumber(playerNumber: Int): WebSocketResponse {
-        return this.copy(playerNumber = playerNumber)
-    }
 }

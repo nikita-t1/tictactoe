@@ -2,11 +2,7 @@ package dev.nikitatarasov
 
 import dev.nikitatarasov.exceptions.NoGameCodeException
 import dev.nikitatarasov.exceptions.WebSocketException
-import dev.nikitatarasov.model.Game
-import dev.nikitatarasov.model.Player
-import dev.nikitatarasov.model.StatusCode
-import dev.nikitatarasov.model.WebSocketRequest
-import dev.nikitatarasov.model.WebSocketResponse
+import dev.nikitatarasov.model.*
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponse
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponses
 import dev.nikitatarasov.util.GameBoardUtils.checkGameOver
@@ -33,7 +29,6 @@ suspend fun DefaultWebSocketServerSession.startSession() {
         if (game.bothPlayersConnected().not()) {
             response = buildResponse(game, player, StatusCode.NO_OPPONENT_YET)
             sendToPlayer(this, response)
-
 
             // Await opponent
             GameService.awaitOpponent(game, player) // blocks until second player joins
@@ -73,12 +68,11 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
             val request = Json.decodeFromString<WebSocketRequest>(frame.readText())
             logger.info { "Received: $request" }
             val player = game.getPlayerBySession(this)!!
+
             if (checkGameOver(game.gameBoard)){
-                // the exact end condition will be evaluated client-side
-                val responses = buildResponses(game, StatusCode.GAME_ENDED)
-                sendToBothPlayers(game, responses.first, responses.second)
-                //TODO: implement rematch
-                continue // skip the rest of this frame
+                // if we get a message after the game is over, it MUST be a rematch request
+                handleRematchRequest(game, request)
+                continue
             }
 
             /**
@@ -90,6 +84,7 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
                 handlePlayerMove(game, player, request.playerMoveAtIndex)
             } // else, it's not the player's turn, so ignore the move request
 
+            // check if the game is over after the move
             if (checkGameOver(game.gameBoard)){
                 // the exact end condition will be evaluated client-side
                 val responses = buildResponses(game, StatusCode.GAME_ENDED)
@@ -99,6 +94,28 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
             }
         }
     }
+}
+
+suspend fun DefaultWebSocketServerSession.handleRematchRequest(game: Game, request: WebSocketRequest) {
+    if (request.rematchRequestedByPlayer) {
+        val player = game.getPlayerBySession(this)
+        val opponent = game.getOpponent(player!!)
+
+        if (game.rematchRequested.contains(opponent)){
+            // if the opponent has already requested a rematch
+            game.rematchRequested.add(player)
+            val gameCode = GameService.generateGameCode()
+            val nextGame = GameStorage.findOrCreateGame(gameCode)
+            val responses = buildResponses(nextGame, StatusCode.REMATCH_ACCEPTED)
+            sendToBothPlayers(game, responses.first, responses.second)
+        } else {
+            // if the opponent has not requested a rematch
+            game.rematchRequested.add(player)
+            val responses = buildResponses(game, StatusCode.REMATCH_REQUESTED)
+            sendToBothPlayers(game, responses.first, responses.second)
+        }
+    }
+
 }
 
 private suspend fun handlePlayerMove(game: Game, player: Player, move: Int) {

@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class StatusCode(val code: Int) {
     @SerialName("4000") STATUS_OK(4000),
+    @SerialName("4002") GAME_STARTED(4002),
 //    @SerialName("4001") GAME_BOARD(4001),
 
     @SerialName("4100") BOTH_PLAYERS_CONNECTED(4100),
@@ -15,9 +16,9 @@ enum class StatusCode(val code: Int) {
     @SerialName("4103") YOUR_MOVE(4103),
 //    @SerialName("4104") OPPONENT_MOVE(4104),
 //    @SerialName("4105") REQUEST_REMATCH(4105),
-//    @SerialName("4106") REMATCH_REQUESTED(4106),
+    @SerialName("4106") REMATCH_REQUESTED(4106),
 //    @SerialName("4107") ACCEPT_REMATCH(4107),
-//    @SerialName("4108") REMATCH_ACCEPTED(4108),
+    @SerialName("4108") REMATCH_ACCEPTED(4108),
 
     @SerialName("4200") MOVE_ACCEPTED(4200),
 //    @SerialName("4201") YOU_WON(4201),
