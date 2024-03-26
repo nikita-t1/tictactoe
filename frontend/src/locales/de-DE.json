@@ -26,7 +26,6 @@
   "opponent_disconnected_desc": "Dein Gegner ist nicht mehr mit dem Server verbunden",
   "wait_for_opponent_reconnect": "Warte auf Verbindungsaufbau des Gegners",
   "close_game": "Spiel schließen",
-  "request_rematch": "Revanche",
   "replay": "Nochmal spielen",
 
   "awaiting_opponent": "Warte auf Gegner",
@@ -35,6 +34,10 @@
   "you_won": "Du hast gewonnen",
   "you_lost": "Du hast verloren",
   "game_draw": "Unentschieden",
+  "rematch_requested": "Revanche angefordert",
+  "rematch_accepted": "Revanche akzeptiert",
+  "opponent_requested_rematch": "Gegner hat Revanche angefordert",
+  "request_rematch": "Revanche",
 
 
   "ws_msg": {

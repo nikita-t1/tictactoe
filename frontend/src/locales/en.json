@@ -26,7 +26,6 @@
   "opponent_disconnected_desc": "It seems like your opponent is no longer connected to the Game Server",
   "wait_for_opponent_reconnect": "Waiting for Opponent to reconnect",
   "close_game": "Close Game",
-  "request_rematch": "Request Rematch",
   "replay": "Replay",
 
   "awaiting_opponent": "Awaiting Opponent",
@@ -35,6 +34,10 @@
   "you_won": "You Won",
   "you_lost": "You Lost",
   "game_draw": "Draw",
+  "rematch_requested": "Rematch Requested",
+  "rematch_accepted": "Rematch Accepted",
+  "opponent_requested_rematch": "Opponent requested a Rematch",
+  "request_rematch": "Request Rematch",
 
   "ws_msg": {
     "4000": "STATUS_OK",
