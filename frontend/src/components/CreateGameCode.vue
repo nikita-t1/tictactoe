@@ -40,7 +40,7 @@ import {getBaseURLWithProtocol} from "@/getBaseURL";
 import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
-import {useWebSocketStore} from "@/stores/websocketStore";
+import {useWebSocketStore} from "@/stores/useMultiplayerWebsocketStore";
 
 const router = useRouter()
 

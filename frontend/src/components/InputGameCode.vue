@@ -37,7 +37,7 @@
 import {type Ref, watch} from "vue";
 import {onMounted, ref} from "vue";
 import router from "@/router";
-import {useWebSocketStore} from "@/stores/websocketStore";
+import {useWebSocketStore} from "@/stores/useMultiplayerWebsocketStore";
 import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
 

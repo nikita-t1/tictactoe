@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 
-import {useWebSocketStore} from "@/stores/websocketStore";
+import {useWebSocketStore} from "@/stores/useMultiplayerWebsocketStore";
 import {computed, onMounted, watch} from "vue";
 import {ErrorCodes} from "@/StatusCodes";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";

@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
-import {useWebSocketStore} from "@/stores/websocketStore";
+import {useWebSocketStore} from "@/stores/useMultiplayerWebsocketStore";
 import {storeToRefs} from "pinia";
 
 const webSocketStore = useWebSocketStore()
