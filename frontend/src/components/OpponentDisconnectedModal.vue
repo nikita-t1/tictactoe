@@ -48,7 +48,7 @@ import {useWebSocketStore} from "@/stores/websocketStore";
 import {storeToRefs} from "pinia";
 
 const webSocketStore = useWebSocketStore()
-const {opponentDisconnected} = storeToRefs(webSocketStore)
+const {bothPlayersConnected, gameBoard} = storeToRefs(webSocketStore)
 
 const {t} = useI18n()
 
@@ -60,11 +60,11 @@ const countDownIsRunning = ref(false)
 const countDownRanOut = ref(false)
 const isOpponentConnected = ref(false)
 
-watch(opponentDisconnected, (value) => {
-    if (value) {
+watch(bothPlayersConnected, (value) => {
+    if (value == false) {
         openModal()
     } else {
-        closeModal()
+        reset()
     }
 })
 
