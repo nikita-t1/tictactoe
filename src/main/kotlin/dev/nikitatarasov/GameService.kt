@@ -17,6 +17,14 @@ object GameService {
         return GameStorage.findGame(gameCode)
     }
 
+    fun generateGameCode(): String {
+        var gameCode: String
+        do {
+            gameCode = Game.randomGameId()
+        } while (findGame(gameCode) != null)
+        return gameCode
+    }
+
     fun findOrCreateGame(gameCode: String): Game {
         return GameStorage.findOrCreateGame(gameCode)
     }
@@ -34,6 +42,7 @@ object GameService {
         val player = assignPlayerToGame(game, session)
         return player
     }
+
     private fun assignPlayerToGame(game: Game, session: DefaultWebSocketServerSession): Player {
         lateinit var player: Player
 
@@ -60,7 +69,7 @@ object GameService {
         val timeout = System.currentTimeMillis() + AWAIT_PLAYER_TIMEOUT_MS
         while (playerToAwait.isConnected().not()) {
             delay(100)
-            if (System.currentTimeMillis() > timeout){
+            if (System.currentTimeMillis() > timeout) {
                 GameStorage.removeGame(game)
                 return false
             }

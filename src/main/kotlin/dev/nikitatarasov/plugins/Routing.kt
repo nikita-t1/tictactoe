@@ -17,10 +17,7 @@ fun Application.configureRouting() {
             // remove old games
             GameStorage.removeExpiredGames()
 
-            var gameCode: String
-            do {
-                gameCode = Game.randomGameId()
-            } while (GameService.findGame(gameCode) != null)
+            val gameCode = GameService.generateGameCode()
             call.respondText { gameCode }
         }
         get("/gameCodes") {
