@@ -18,9 +18,8 @@ describe('SingleplayerPlayView', () => {
 
     test('renders correctly based on props', ({expect}) => {
         const gameStore = useSingleplayerGameStore()
-        const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
+        const {userMessage, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 
-        currentStatusCode.value = WebSocketCodes.STATUS_OK
         hasGameEnded.value = true
         awaitingMoveBy.value = MOVE_BY_PLAYER
         gameBoard.value = Array(9).fill(EMPTY_BOARD_FIELD)
@@ -39,10 +38,9 @@ describe('SingleplayerPlayView', () => {
     test('run functions on button clicks', ({expect}) => {
         const gameStore = useSingleplayerGameStore()
         const replaySpy = vi.spyOn(gameStore, 'replay')
-        const {currentStatusCode, hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
+        const {hasGameEnded, awaitingMoveBy, gameBoard} = storeToRefs(gameStore)
 
         hasGameEnded.value = true
-        currentStatusCode.value = WebSocketCodes.STATUS_OK
 
         const wrapper = mount(SingleplayerPlayView, options)
         expect(gameStore.replay).toHaveBeenCalledTimes(1)

@@ -5,7 +5,7 @@ import GameBoard from "../../src/components/GameBoard.vue";
 import IconCross from "../../src/components/icons/IconCross.vue";
 import IconCircle from "../../src/components/icons/IconCircle.vue";
 
-import {EMPTY_BOARD_FIELD, MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "../../src/helper/GameBoardHelper";
+import {EMPTY_BOARD_FIELD,MOVE_BY_OPPONENT as MOVE_BY_COMPUTER, MOVE_BY_PLAYER} from "../../src/helper/GameBoardHelper";
 
 describe('GameBoard', () => {
 

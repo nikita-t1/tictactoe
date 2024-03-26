@@ -49,7 +49,7 @@ describe('gameStore', () => {
         gameStore.$patch({awaitingMoveBy: MOVE_BY_PLAYER})
         gameStore.playerMove(0)
         expect(gameStore.hasGameEnded).toBe(true)
-        expect(gameStore.currentStatusCode).toBe(WebSocketCodes.GAME_ENDED_IN_DRAW)
+        expect(gameStore.userMessage).toBe("game_draw")
     })
 
     it('check for winner', () => {
@@ -62,6 +62,6 @@ describe('gameStore', () => {
         gameStore.$patch({awaitingMoveBy: MOVE_BY_PLAYER})
         gameStore.playerMove(0)
         expect(gameStore.hasGameEnded).toBe(true)
-        expect(gameStore.currentStatusCode).toBe(WebSocketCodes.YOU_WON)
+        expect(gameStore.userMessage).toBe("you_won")
     })
 })
