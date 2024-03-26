@@ -17,7 +17,7 @@
                 class="flex-none mt-10 mx-auto inline-flex items-center gap-2 text-sm font-medium">
                 <button type="button" @click="webSocketStore.requestRematch()"
                         class="btn btn-primary w-full">
-                    {{ rematchRequested ? t(userMessage) : t("request_rematch") }}
+                    {{ t(rematchText) }}
                 </button>
             </div>
             <router-link @click="webSocketStore.reset()" to="/"
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 
 import {useWebSocketStore} from "@/stores/websocketStore";
-import {computed, onMounted} from "vue";
+import {computed, onMounted, watch} from "vue";
 import {ErrorCodes} from "@/StatusCodes";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
 import {useI18n} from "vue-i18n";
@@ -50,8 +50,19 @@ const {t} = useI18n()
 const router = useRouter()
 
 const webSocketStore = useWebSocketStore()
-const {ws, gameBoard, hasGameEnded, isMyMove, rematchRequested, currentStatusCode,userMessage} = storeToRefs(webSocketStore)
+const {ws,gameCode, gameBoard, hasGameEnded, isMyMove, rematchText, currentStatusCode,userMessage} = storeToRefs(webSocketStore)
 const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
+
+/**
+ * Change the URL if the gamaCode changes
+ *
+ * This will happen when a rematch request was accepted and the players are redirected to the new game
+ */
+watch(gameCode, (value) => {
+    if (value != null) {
+        router.push({path: "/multiplayer/play", query: {gameCode: value}})
+    }
+})
 
 function playerMove(index: number) {
     console.log(`playerMove(${index+1})`)

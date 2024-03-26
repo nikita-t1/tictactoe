@@ -6,5 +6,5 @@ export default interface WebSocketResponse {
     hasGameEnded: boolean
     awaitMoveFromPlayer: number
     bothPlayersConnected: boolean
-    rematchRequestedByPlayer: number // rematch accepted only as status code
+    rematchRequestedByPlayer: number[] // rematch accepted only as status code
 }
