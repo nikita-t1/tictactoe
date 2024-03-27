@@ -2,7 +2,6 @@ import {computed, type Ref, ref} from 'vue'
 import {defineStore} from 'pinia'
 import {getBaseURL} from "@/getBaseURL";
 import {WebSocketCodes} from "@/StatusCodes";
-import router from "@/router";
 import type WebSocketRequest from "@/types/WebSocketRequest";
 import type WebSocketResponse from "@/types/WebSocketResponse";
 import {checkDraw, checkWinner} from "@/helper/GameBoardHelper";
@@ -37,7 +36,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
             return "request_rematch"
         }
     })
-    // const opponentDisconnectedBus = useEventBus<boolean>('opponentDisconnected')
 
     const init = (newGameCode: string) => {
         gameCode.value = newGameCode
@@ -52,6 +50,12 @@ export const useWebSocketStore = defineStore('websocket', () => {
         ws.value.send(msg.toString())
     }
 
+    /**
+     * Sends a game board move to the server.
+     *
+     * @param {number} index - The index of the game board move. One-based index 1-9.
+     * @returns {void}
+     */
     const sendGameBoardMove = (index: number) => {
         const req: WebSocketRequest = {
             gameCode: gameCode.value ?? "",
@@ -62,6 +66,10 @@ export const useWebSocketStore = defineStore('websocket', () => {
         sendWebSocketMsg(JSON.stringify(req))
     }
 
+    /**
+     * Handles all incoming messages from the WebSocket connection.
+     * @param {MessageEvent} event - The message event from the WebSocket connection.
+     */
     const onMessageEvent = (event: MessageEvent) => {
         const webSocketData: WebSocketResponse = JSON.parse(event.data)
         currentStatusCode.value = webSocketData.statusCode
@@ -72,11 +80,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
         gameBoard.value = webSocketData.gameBoard
         hasGameEnded.value = webSocketData.hasGameEnded
 
-        // Opponent disconnected during the game
-        // if (!webSocketData.bothPlayersConnected && bothPlayersConnected.value) {
-        //     handleOpponentDisconnected()
-        // }
-
         // Update the store with the received data
         bothPlayersConnected.value = webSocketData.bothPlayersConnected
         opponentDisconnected.value = !webSocketData.bothPlayersConnected
@@ -86,6 +89,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
         // Update the user error message based on the received data
         updateUserErrorMessage(webSocketData)
 
+        // Handle rematch requests and acceptances
         if (webSocketData.statusCode == WebSocketCodes.REMATCH_REQUESTED || webSocketData.statusCode == WebSocketCodes.REMATCH_ACCEPTED) {
             handleRematch(webSocketData)
         }
@@ -131,23 +135,17 @@ export const useWebSocketStore = defineStore('websocket', () => {
         // TODO: Implement error handling
     }
 
+    /**
+     * Handles a rematch request / acceptance from the opponent.
+     *
+     * If both players have requested a rematch, the game will be reset and a new game will be started.
+     * Otherwise, the user message will be updated based on the received data.
+     */
     function handleRematch(webSocketData: WebSocketResponse) {
-        console.log("handleRematch")
-        console.log("rematchRequest", rematchRequest.value)
         // correct button text will be evaluated based on this, so no extra code is required to tell that the opponent requested a rematch
         rematchRequest.value = webSocketData.rematchRequestedByPlayer
-        console.log("rematchRequest", rematchRequest.value)
-
-        // const isRematchRequestCode = webSocketData.statusCode == WebSocketCodes.REMATCH_REQUESTED
-        // const requestedByOpponent = rematchRequestedByMe.value == false
-        // if (isRematchRequestCode && requestedByOpponent) {
-        //     // Opponent requested a rematch
-        //     // show a dialog to accept or decline the rematch
-        //     return
-        // }
 
         const isRematchAcceptedCode = webSocketData.statusCode == WebSocketCodes.REMATCH_ACCEPTED
-        console.log("isRematchAcceptedCode", isRematchAcceptedCode)
         if (isRematchAcceptedCode) {
             console.log("Both players have requested a rematch")
             // Both players have requested a rematch
@@ -155,7 +153,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
             reset()
             const gameCode = webSocketData.gameCode
             init(gameCode)
-            router.push({path: "/multiplayer/play", query: {gameCode: gameCode}})
+            // router will be called from the component
         }
     }
 

@@ -17,5 +17,6 @@ app.use(i18n)
 app.mount('#app')
 
 const isDark = usePreferredDark()
+//TODO: make the favicon change based on the daisyUI theme
 const favicon = computed(() => isDark.value ? 'tic-tac-toe_light.ico' : 'tic-tac-toe_dark.ico')
 useFavicon(favicon)

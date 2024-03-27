@@ -25,14 +25,11 @@ import {useI18n} from "vue-i18n";
 
 const {t} = useI18n()
 
-
 const hash = parseInt(location.hash.slice(1)) || ErrorCodes.GENERIC_ERROR
 const msg = t("error_msg." + hash)
 
 </script>
 
 <style scoped>
-div, h1, p, a{
-  @apply transition-all duration-700
-}
+
 </style>

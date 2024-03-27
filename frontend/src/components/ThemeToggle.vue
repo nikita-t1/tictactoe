@@ -1,5 +1,5 @@
 <template>
-    <div class="inline-block rounded-lg p-1.5 m-2 absolute top-2 right-6">
+    <div class="inline-block rounded-lg m-2 absolute top-2 right-6">
         <div class="drawer drawer-end ">
             <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content " @click.right="pepe" @contextmenu.prevent>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import {useColorMode, useCycleList, useStorage} from '@vueuse/core'
+import {useColorMode, useStorage} from '@vueuse/core'
 
 const themes = [
     "light",
@@ -90,6 +90,7 @@ const mode = useColorMode({
     attribute: 'data-theme',
 })
 
+// is used in the Cross and Circle components
 const isPepe = useStorage('isPepe', false) // returns Ref<boolean>
 function pepe(){
     console.log("pepe")
@@ -111,6 +112,4 @@ function setTheme(theme: string) {
     document.documentElement.setAttribute('data-theme', theme)
 }
 
-
-const {next} = useCycleList(themes, {initialValue: mode})
 </script>

@@ -3,9 +3,13 @@ import IconCircle from "@/components/icons/IconCircle.vue";
 import IconCross from "@/components/icons/IconCross.vue";
 
 import {MOVE_BY_OPPONENT, MOVE_BY_PLAYER} from "@/helper/GameBoardHelper";
+import type {PropType} from "vue";
 
 const props = defineProps({
-    gameBoard: Array,
+    gameBoard: {
+        type: Array as PropType<number[]>,
+        required: true
+    },
     awaitingMoveBy: Number
 })
 

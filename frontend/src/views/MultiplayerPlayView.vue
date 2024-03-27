@@ -54,7 +54,7 @@ const {ws,gameCode, gameBoard, hasGameEnded, isMyMove, rematchText, currentStatu
 const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
 
 /**
- * Change the URL if the gamaCode changes
+ * Change the URL if the gameCode changes
  *
  * This will happen when a rematch request was accepted and the players are redirected to the new game
  */
@@ -65,7 +65,6 @@ watch(gameCode, (value) => {
 })
 
 function playerMove(index: number) {
-    console.log(`playerMove(${index+1})`)
     webSocketStore.sendGameBoardMove(index+1)
 }
 
@@ -85,8 +84,5 @@ onBeforeRouteLeave(() => {
 </script>
 
 <style scoped>
-.field {
-    @apply transition-all duration-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
-}
 
 </style>

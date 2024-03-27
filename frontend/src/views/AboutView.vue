@@ -20,7 +20,9 @@
                         {{ t("first_time_using") }} <KBD text="WebSockets"/>
                     </li>
                     <li>{{ t("getting_more_familiar_with") }} <KBD text="Vue.js"/></li>
-                    <li>{{ t("getting_more_familiar_with") }} <KBD text="TailwindCSS"/> {{ t("and") }} <KBD text="CSS"/> {{ t("in_general") }}</li>
+                    <li>{{ t("getting_more_familiar_with") }} <KBD text="TailwindCSS"/> {{ t("and") }} <KBD text="CSS"/>
+                        {{ t("in_general") }}
+                    </li>
                 </ul>
             </div>
 
@@ -36,15 +38,10 @@
 }
 </style>
 <script setup lang="ts">
-import {computed} from "vue";
-import {useDark} from "@vueuse/core";
 import KBD from "@/components/KBD.vue";
 import {useI18n} from "vue-i18n";
 import IconLogo from "@/components/icons/IconLogo.vue";
 
 const {t} = useI18n()
-
-const isDark = useDark()
-const favicon = computed(() => isDark.value ? '/tic-tac-toe_light.ico' : '/tic-tac-toe_dark.ico')
 
 </script>

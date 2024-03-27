@@ -49,7 +49,6 @@ const {t} = useI18n()
 const gameCode = ref("")
 const currentStatusCode: Ref<null | string> = ref(null)
 
-
 // Focus on the InputField
 const inputField = ref<HTMLInputElement | null>(null)
 onMounted(() => {

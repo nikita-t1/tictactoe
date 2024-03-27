@@ -79,7 +79,5 @@ const {t} = useI18n()
 </script>
 
 <style scoped>
-* {
-    @apply transition-all duration-700;
-}
+
 </style>
