@@ -1,5 +1,6 @@
 package dev.nikitatarasov.plugins
 
+import dev.nikitatarasov.wrapper.DefaultWebSocketServerSessionWrapper
 import dev.nikitatarasov.startSession
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.server.application.Application
@@ -29,7 +30,8 @@ fun Application.configureSockets() {
 
     routing {
         webSocket("/ws") {
-            startSession()
+            val sessionWrapper = DefaultWebSocketServerSessionWrapper(this)
+            startSession(sessionWrapper)
         }
     }
 }

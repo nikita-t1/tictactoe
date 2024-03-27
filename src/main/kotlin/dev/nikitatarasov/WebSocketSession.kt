@@ -6,28 +6,27 @@ import dev.nikitatarasov.model.*
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponse
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponses
 import dev.nikitatarasov.util.GameBoardUtils.checkGameOver
+import dev.nikitatarasov.wrapper.WebSocketSessionWrapper
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private val logger = KotlinLogging.logger {}
 
-suspend fun DefaultWebSocketServerSession.startSession() {
+suspend fun startSession(session: WebSocketSessionWrapper) {
     var game: Game? = null // Game is null until it's created or found
     var response: WebSocketResponse
     var responses: Pair<WebSocketResponse, WebSocketResponse>
     try {
-        val gameCode = call.request.queryParameters["gameCode"]?.uppercase()
+        val gameCode = session.call.request.queryParameters["gameCode"]?.uppercase()
         if (gameCode.isNullOrBlank()) throw NoGameCodeException()
         game = GameStorage.findOrCreateGame(gameCode)
 
         // Assign player to game
-        val player = GameService.connectPlayerToGame(game, this)
+        val player = GameService.connectPlayerToGame(game, session)
         if (game.bothPlayersConnected().not()) {
             response = buildResponse(game, player, StatusCode.NO_OPPONENT_YET)
-            sendToPlayer(this, response)
+            sendToPlayer(session, response)
 
             // Await opponent
             GameService.awaitOpponent(game, player) // blocks until second player joins
@@ -41,24 +40,24 @@ suspend fun DefaultWebSocketServerSession.startSession() {
         responses = buildResponses(game, StatusCode.GAME_STARTED)
         sendToBothPlayers(game, responses.first, responses.second)
 
-        handleIncomingFrames(game)
+        handleIncomingFrames(game, session)
 
     } catch (e: WebSocketException) {
-        sendSerialized(e.webSocketDataCode)
+        session.sendSerialized(e.webSocketDataCode)
     } catch (e: Exception) {
         e.printStackTrace()
     } finally {
 
-        val disconnectedPlayer = game?.getPlayerBySession(this)
+        val disconnectedPlayer = game?.getPlayerBySession(session)
         val stillConnectedPlayer = game?.getOpponent(disconnectedPlayer!!)
-        game?.removePlayer(this)
+        game?.removePlayer(session)
         // check if the other player is still connected
         if (stillConnectedPlayer?.isConnected() == true) {
             response = buildResponse(game!!, stillConnectedPlayer, StatusCode.OPPONENT_DISCONNECTED)
             sendToPlayer(stillConnectedPlayer.session!!, response)
         }
 
-        this.close()
+        session.close()
     }
 }
 
@@ -69,19 +68,19 @@ suspend fun DefaultWebSocketServerSession.startSession() {
  *
  * @param game The game object
  */
-private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Game) {
+private suspend fun handleIncomingFrames(game: Game, session: WebSocketSessionWrapper) {
     var counter = 0
 
-    for (frame in incoming) {
+    for (frame in session.incoming) {
         if (frame is Frame.Text) {
             logger.trace { "Frame #${++counter}" }
             val request = Json.decodeFromString<WebSocketRequest>(frame.readText())
             logger.debug { "Received: $request" }
-            val player = game.getPlayerBySession(this)!!
+            val player = game.getPlayerBySession(session)!!
 
             if (checkGameOver(game.gameBoard)){
                 // if we get a message after the game is over, it MUST be a rematch request
-                handleRematchRequest(game, request)
+                handleRematchRequest(game, session, request)
                 continue // skip the rest of this frame
             }
 
@@ -105,9 +104,9 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
     }
 }
 
-suspend fun DefaultWebSocketServerSession.handleRematchRequest(game: Game, request: WebSocketRequest) {
+suspend fun handleRematchRequest(game: Game, session: WebSocketSessionWrapper, request: WebSocketRequest) {
     if (request.rematchRequestedByPlayer) {
-        val player = game.getPlayerBySession(this)
+        val player = game.getPlayerBySession(session)
         val opponent = game.getOpponent(player!!)
 
         if (game.rematchRequested.contains(opponent)){
@@ -147,7 +146,7 @@ private suspend fun sendToBothPlayers(game: Game, toFirst: WebSocketResponse, to
     game.secondPlayer.session?.sendSerialized(toSecond)
 }
 
-private suspend fun sendToPlayer(session: DefaultWebSocketServerSession, response: WebSocketResponse) {
+private suspend fun sendToPlayer(session: WebSocketSessionWrapper, response: WebSocketResponse) {
     session.sendSerialized(response)
 }
 

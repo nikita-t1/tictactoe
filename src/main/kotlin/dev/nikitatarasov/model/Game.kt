@@ -1,7 +1,7 @@
 package dev.nikitatarasov.model
 
+import dev.nikitatarasov.wrapper.WebSocketSessionWrapper
 import dev.nikitatarasov.util.now
-import io.ktor.server.websocket.*
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlinx.datetime.LocalDateTime.Companion as LocalDateTime
@@ -36,12 +36,12 @@ data class Game(
         return firstPlayer.isConnected() && secondPlayer.isConnected()
     }
 
-    fun removePlayer(session: DefaultWebSocketServerSession) {
+    fun removePlayer(session: WebSocketSessionWrapper) {
         val player = getPlayerBySession(session)
         player?.session = null
     }
 
-    fun getPlayerBySession(session: DefaultWebSocketServerSession): Player? {
+    fun getPlayerBySession(session: WebSocketSessionWrapper): Player? {
         return when (session) {
             firstPlayer.session -> firstPlayer
             secondPlayer.session -> secondPlayer

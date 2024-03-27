@@ -4,9 +4,7 @@ import dev.nikitatarasov.exceptions.GameLobbyIsFullException
 import dev.nikitatarasov.exceptions.TimeoutSecondPlayerException
 import dev.nikitatarasov.model.Game
 import dev.nikitatarasov.model.Player
-import dev.nikitatarasov.model.PlayerSymbol
-import dev.nikitatarasov.util.GameBoardUtils.checkWinner
-import io.ktor.server.websocket.*
+import dev.nikitatarasov.wrapper.WebSocketSessionWrapper
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -44,12 +42,12 @@ object GameService {
         return GameStorage.findOrCreateGame(gameCode)
     }
 
-    suspend fun connectPlayerToGame(game: Game, session: DefaultWebSocketServerSession): Player {
+    suspend fun connectPlayerToGame(game: Game, session: WebSocketSessionWrapper): Player {
         val player = assignPlayerToGame(game, session)
         return player
     }
 
-    private fun assignPlayerToGame(game: Game, session: DefaultWebSocketServerSession): Player {
+    private fun assignPlayerToGame(game: Game, session: WebSocketSessionWrapper): Player {
         lateinit var player: Player
 
         if (game.firstPlayer.isConnected().not()) {

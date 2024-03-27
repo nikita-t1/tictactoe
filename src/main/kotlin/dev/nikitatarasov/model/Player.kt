@@ -1,11 +1,8 @@
 package dev.nikitatarasov.model
 
-import dev.nikitatarasov.serializer.UUIDSerializer
-import io.ktor.server.websocket.DefaultWebSocketServerSession
-import kotlinx.coroutines.isActive
+import dev.nikitatarasov.wrapper.WebSocketSessionWrapper
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import java.util.*
 
 /**
  * Represents a player in the Tic-Tac-Toe game.
@@ -17,7 +14,7 @@ import java.util.*
 data class Player(
     val symbol: PlayerSymbol,
 ) {
-    @Transient var session: DefaultWebSocketServerSession? = null
+    @Transient var session: WebSocketSessionWrapper? = null
 
     fun isConnected(): Boolean = session != null //&& session!!.isActive
 }
