@@ -6,7 +6,7 @@ import dev.nikitatarasov.model.*
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponse
 import dev.nikitatarasov.model.WebSocketResponse.Companion.buildResponses
 import dev.nikitatarasov.util.GameBoardUtils.checkGameOver
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
@@ -91,7 +91,7 @@ private suspend fun DefaultWebSocketServerSession.handleIncomingFrames(game: Gam
 
             // if the game is not over, and the board is not full, and it's the player's turn
             if (game.awaitMoveByPlayer == player){
-                handlePlayerMove(game, player, request.playerMoveAtIndex)
+                handlePlayerMove(game, player, request.playerMoveAtIndex!!)
             } // else, it's not the player's turn, so ignore the move request
 
             // check if the game is over after the move

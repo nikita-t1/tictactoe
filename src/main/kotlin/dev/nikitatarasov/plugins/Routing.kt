@@ -2,8 +2,7 @@ package dev.nikitatarasov.plugins
 
 import dev.nikitatarasov.GameService
 import dev.nikitatarasov.GameStorage
-import dev.nikitatarasov.model.Game
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*

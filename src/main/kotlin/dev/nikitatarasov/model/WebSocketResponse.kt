@@ -1,7 +1,7 @@
 package dev.nikitatarasov.model
 
 import dev.nikitatarasov.util.GameBoardUtils
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
 
 /**

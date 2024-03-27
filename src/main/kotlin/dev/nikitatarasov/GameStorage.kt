@@ -1,7 +1,7 @@
 package dev.nikitatarasov
 
 import dev.nikitatarasov.model.Game
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.toJavaLocalDateTime
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit

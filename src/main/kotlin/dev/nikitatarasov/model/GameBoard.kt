@@ -1,6 +1,6 @@
 package dev.nikitatarasov.model
 
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
 
 /**

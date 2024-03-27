@@ -2,7 +2,7 @@ package dev.nikitatarasov.util
 
 import dev.nikitatarasov.model.GameBoard
 import dev.nikitatarasov.model.PlayerSymbol
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Utility class for game board operations.
