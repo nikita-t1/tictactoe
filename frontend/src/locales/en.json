@@ -3,7 +3,7 @@
   "about": "About",
   "overview": "Overview",
   "singleplayer": "Singleplayer",
-    "multiplayer": "Multiplayer",
+  "multiplayer": "Multiplayer",
   "overview_desc": "This is a simple TicTacToe game made with Vue 3 and TailwindCSS on the frontend and Ktor with Kotlin on the backend.",
   "motivation": "Motivation",
   "motivation_desc": "The Goal of this Project is for me to learn new technologies and tools. This includes:",
@@ -26,8 +26,18 @@
   "opponent_disconnected_desc": "It seems like your opponent is no longer connected to the Game Server",
   "wait_for_opponent_reconnect": "Waiting for Opponent to reconnect",
   "close_game": "Close Game",
-  "request_rematch": "Request Rematch",
   "replay": "Replay",
+
+  "awaiting_opponent": "Awaiting Opponent",
+  "your_turn": "Your Turn",
+  "opponents_turn": "Opponent's Turn",
+  "you_won": "You Won",
+  "you_lost": "You Lost",
+  "game_draw": "Draw",
+  "rematch_requested": "Rematch Requested",
+  "rematch_accepted": "Rematch Accepted",
+  "opponent_requested_rematch": "Opponent requested a Rematch",
+  "request_rematch": "Request Rematch",
 
   "ws_msg": {
     "4000": "STATUS_OK",
@@ -45,6 +55,7 @@
     "4202": "Sorry, you lost the Game",
     "4203": "The game ended in a draw",
 
+    "4300": "No opponent has joined this Game yet",
     "4302": "No second Player has joined this Game yet",
     "4303": "Your opponent has left the Game",
 

@@ -1,25 +1,32 @@
 package dev.nikitatarasov
 
 import dev.nikitatarasov.model.Game
-import io.github.oshai.KotlinLogging
-import kotlinx.coroutines.delay
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.toJavaLocalDateTime
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
-object Controller {
+/**
+ * The GameStorage class provides storage and operations for managing Tic Tac Toe games.
+ */
+object GameStorage {
 
     private val logger = KotlinLogging.logger {}
+
     private val games: MutableSet<Game> = Collections.synchronizedSet(LinkedHashSet())
 
-    fun getAllGames() = games as? Set<Game>
+    fun getAllGames() = games.toSet()
 
     fun findGame(gameCode: String): Game? {
         synchronized(games){
             return games.find { it.id == gameCode }
         }
+    }
+
+    fun findOrCreateGame(gameCode: String): Game {
+        return findGame(gameCode) ?: createGame(gameCode)
     }
 
     fun removeGame(game: Game){
@@ -36,28 +43,20 @@ object Controller {
         }
     }
 
+    /**
+     * Removes expired games from the game storage.
+     *
+     * This method is executed on every new gameCode creation.
+     *
+     * @param expirationTime The expiration time in minutes. Default value is 60 minutes.
+     */
     fun removeExpiredGames(expirationTime: Int = 60){
         synchronized(games) {
             getAllGames()
-                ?.filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
-                ?.forEach {
+                .filter { ChronoUnit.MINUTES.between(it.creationTime.toJavaLocalDateTime(), LocalDateTime.now()) >= expirationTime }
+                .forEach {
                     logger.info{"Remove Game Code: ${it.id}"}
                     removeGame(it)
                 }
         }
-    }
-
-    suspend inline fun awaitPlayer(game: Game): Boolean {
-        val playerToAwait = if (game.firstPlayer.isReady()) game.secondPlayer else game.firstPlayer
-        val timeout = System.currentTimeMillis() + (1000 * 60 * 5) // 5 min
-        while (playerToAwait.isReady().not()) {
-            delay(100)
-            if (System.currentTimeMillis() > timeout){
-                removeGame(game)
-                return false
-            }
-        }
-        return true
-    }
-
-}
+    }}

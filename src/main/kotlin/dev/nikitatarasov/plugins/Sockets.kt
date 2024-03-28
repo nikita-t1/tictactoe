@@ -1,5 +1,6 @@
 package dev.nikitatarasov.plugins
 
+import dev.nikitatarasov.wrapper.DefaultWebSocketServerSessionWrapper
 import dev.nikitatarasov.startSession
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.server.application.Application
@@ -18,12 +19,19 @@ fun Application.configureSockets() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
-        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        contentConverter = KotlinxWebsocketSerializationConverter(
+            Json {
+                encodeDefaults = true
+                prettyPrint = true
+                isLenient = true
+            }
+        )
     }
 
     routing {
         webSocket("/ws") {
-            startSession()
+            val sessionWrapper = DefaultWebSocketServerSessionWrapper(this)
+            startSession(sessionWrapper)
         }
     }
 }

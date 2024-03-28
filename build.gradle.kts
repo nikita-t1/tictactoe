@@ -31,9 +31,13 @@ repositories {
     mavenCentral()
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
     implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
@@ -43,8 +47,11 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
-    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-22")
-}
+    implementation("io.github.oshai:kotlin-logging-jvm:6.0.3")
+
+//    testImplementation(kotlin("test-junit"))
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
+    testImplementation("io.mockk:mockk:1.13.10")}

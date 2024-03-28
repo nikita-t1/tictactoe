@@ -1,37 +1,29 @@
 <template>
-    <div class="transition-all duration-700 flex flex-col items-center justify-center mx-auto">
-        <OpponentDisconnectedModal ref="OpponentDisconnectedModalRef" @timeout-reached.once="timeoutReached"/>
+    <div class="flex flex-col items-center justify-center mx-auto">
+        <OpponentDisconnectedModal />
 
-        <div class="transition-all duration-700 max-w-4xl space-x-8 space-y-4">
-            <div class="grid gap-x-4 gap-y-4 grid-cols-3">
-                <div v-for="(item, index) in gameBoard" class="field cursor-pointer"
-                     :class="{'cursor-not-allowed' : !isMyMove}" @click="sendWebSocketData(index+1)">
-                    <IconCross v-if="item === 1"/>
-                    <IconCircle v-if="item === 2"/>
-                </div>
-            </div>
-        </div>
+        <GameBoard :gameBoard="gameBoard" :awaiting-move-by="awaitingMoveBy"
+                   @player-move="(index) => playerMove(index)"/>
 
-        <div class="transition-all duration-700 w-96 mt-4 p-2 text-center text-white">
-        <span :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'"
-              class="transition-all duration-700 text-gray-800 dark:text-white">
-            {{ t("ws_msg." + currentStatusCode) }} <!-- "ws_msg.4302" -->
+        <div class="w-96 mt-4 p-2 text-center">
+        <span :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'">
+            {{ t(userMessage) }}
          </span>
         </div>
 
         <div v-if="hasGameEnded"
-             class="transition-all duration-700 flex flex-col md:flex-row max-w-xl content-center self-center items-center justify-center mx-auto space-x-2">
+             class="flex flex-col md:flex-row max-w-xl content-center self-center items-center justify-center mx-auto space-x-2">
             <div
-                class="flex-none mt-10 mx-auto inline-flex items-center gap-2 mt-5 text-sm font-medium text-blue-500 hover:text-blue-700">
-                <button type="button" @click="requestRematch"
-                        class="transition-all duration-700 py-[.688rem] px-4 mx-auto w-48 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-600 hover:bg-blue-700 text-white text-sm dark:focus:ring-offset-gray-800">
-                    {{ rematchRequestAccept ? t("ws_msg." + WebSocketCodes.REMATCH_REQUESTED) : t("request_rematch") }}
+                class="flex-none mt-10 mx-auto inline-flex items-center gap-2 text-sm font-medium">
+                <button type="button" @click="webSocketStore.requestRematch()"
+                        class="btn btn-primary w-full">
+                    {{ t(rematchText) }}
                 </button>
             </div>
-            <router-link @click="resetConnection" to="/"
-                         class="flex-none mx-auto inline-flex items-center gap-2 mt-10  text-sm font-medium text-blue-500 hover:text-blue-700">
+            <router-link @click="webSocketStore.reset()" to="/"
+                         class="flex-none mx-auto inline-flex items-center gap-2 mt-10  text-sm font-medium">
                 <button type="button"
-                        class="transition-all duration-700 py-[.688rem] px-4 w-48 inline-flex justify-center items-center gap-2 rounded-md border-2 border-gray-200 font-semibold text-blue-600 hover:text-white hover:bg-blue-600 hover:border-blue-600 text-sm dark:border-gray-700 dark:hover:border-blue-600">
+                        class="btn btn-ghost w-full">
                     {{ t("home") }}
                 </button>
             </router-link>
@@ -44,128 +36,53 @@
 
 <script setup lang="ts">
 
-import {useWebSocketStore} from "@/stores/websocket";
-import type {Ref} from 'vue'
-import {onMounted, ref} from "vue";
-import {ErrorCodes, WebSocketCodes} from "@/StatusCodes";
-import router from "@/router";
+import {useWebSocketStore} from "@/stores/useMultiplayerWebsocketStore";
+import {computed, onMounted, watch} from "vue";
+import {ErrorCodes} from "@/StatusCodes";
 import OpponentDisconnectedModal from "@/components/OpponentDisconnectedModal.vue";
-import IconCircle from "@/components/icons/IconCircle.vue";
-import IconCross from "@/components/icons/IconCross.vue";
-import {getBaseURL} from "@/getBaseURL";
 import {useI18n} from "vue-i18n";
-import {onBeforeRouteLeave} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
+import {storeToRefs} from "pinia";
+import GameBoard from "@/components/GameBoard.vue";
+import {MOVE_BY_OPPONENT, MOVE_BY_PLAYER} from "@/helper/GameBoardHelper";
 
 const {t} = useI18n()
+const router = useRouter()
 
-const OpponentDisconnectedModalRef = ref<InstanceType<typeof OpponentDisconnectedModal> | null>(null)
+const webSocketStore = useWebSocketStore()
+const {ws,gameCode, gameBoard, hasGameEnded, isMyMove, rematchText, currentStatusCode,userMessage} = storeToRefs(webSocketStore)
+const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
 
-const currentStatusCode: Ref<null | string> = ref(null)
+/**
+ * Change the URL if the gameCode changes
+ *
+ * This will happen when a rematch request was accepted and the players are redirected to the new game
+ */
+watch(gameCode, (value) => {
+    if (value != null) {
+        router.push({path: "/multiplayer/play", query: {gameCode: value}})
+    }
+})
 
-const isMyMove = ref(false)
-const gameBoard: Ref<number[]> = ref([0, 0, 0, 0, 0, 0, 0, 0, 0])
-const hasGameEnded = ref(false)
-
-const rematchRequestAccept = ref(false)
-const rematchBtnText = ref("Request Rematch")
-
-let ws: WebSocket | null = null;
+function playerMove(index: number) {
+    webSocketStore.sendGameBoardMove(index+1)
+}
 
 onMounted(() => {
-    ws = useWebSocketStore().ws
-    if (ws == null) {
+    console.log(ws.value?.url)
+    console.log(ws.value)
+    if (ws.value == null) {
         router.push({path: "/error", hash: `#${ErrorCodes.WEBSOCKET_IS_NULL}`})
-    } else {
-        startWebSocketListener()
     }
 })
 
-onBeforeRouteLeave((to, from) => {
-    resetConnection()
+onBeforeRouteLeave(() => {
+    webSocketStore.reset()
 })
 
-function timeoutReached() {
-    resetConnection()
-}
-
-function resetConnection() {
-    ws?.close()
-    useWebSocketStore().ws = null
-
-    isMyMove.value = false
-    hasGameEnded.value = false
-    rematchRequestAccept.value = false
-    rematchBtnText.value = t("request_rematch")
-    gameBoard.value = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
-
-function requestRematch() {
-    console.log(WebSocketCodes.REQUEST_REMATCH.toString())
-    if (!rematchRequestAccept.value) {
-        ws?.send(WebSocketCodes.REQUEST_REMATCH.toString())
-    } else {
-        ws?.send(WebSocketCodes.ACCEPT_REMATCH.toString())
-    }
-}
-
-function sendWebSocketData(number: number) {
-    ws!.send(number.toString())
-}
-
-function startWebSocketListener() {
-    ws!.onmessage = (event: any) => {
-        const webSocketData = JSON.parse(event.data)
-        console.log(webSocketData)
-
-        if (webSocketData.statusCode == WebSocketCodes.YOUR_MOVE) {
-            isMyMove.value = true
-        } else if (webSocketData.statusCode == WebSocketCodes.OPPONENT_MOVE) {
-            isMyMove.value = false
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.YOU_WON || webSocketData.statusCode == WebSocketCodes.OPPONENT_WON || webSocketData.statusCode == WebSocketCodes.GAME_ENDED_IN_DRAW) {
-            hasGameEnded.value = true
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.OPPONENT_DISCONNECTED) {
-            OpponentDisconnectedModalRef.value?.openModal()
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.FIRST_PLAYER_CONNECTED || webSocketData.statusCode == WebSocketCodes.SECOND_PLAYER_CONNECTED) {
-            OpponentDisconnectedModalRef.value?.opponentReConnected()
-        }
-
-        if (webSocketData.statusCode != WebSocketCodes.GAME_BOARD) {
-            currentStatusCode.value = webSocketData.statusCode
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.GAME_BOARD) {
-            gameBoard.value = JSON.parse(webSocketData.msg.replace(/'/g, '"'))
-        }
-
-        if (webSocketData.statusCode == WebSocketCodes.REMATCH_REQUESTED) {
-            rematchRequestAccept.value = true
-            // rematchBtnText.value = t("ws_msg." + WebSocketCodes.REMATCH_REQUESTED)
-
-        }
-        if (webSocketData.statusCode == WebSocketCodes.REMATCH_ACCEPTED) {
-            resetConnection()
-
-            const gameCode = webSocketData.msg
-            const protocol = location.protocol == 'https:' ? "wss" : "ws"
-            useWebSocketStore().ws = new WebSocket(`${protocol}://${getBaseURL()}/ws?gameCode=${gameCode}`)
-            ws = useWebSocketStore().ws
-            router.push({path: "/multiplayer/play", query: {gameCode: gameCode}})
-            startWebSocketListener()
-        }
-    }
-}
 
 </script>
 
 <style scoped>
-.field {
-    @apply transition-all duration-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-500 aspect-square w-32 font-mono flex h-full justify-center content-center items-center text-6xl outline outline-2 outline-offset-1 outline-blue-500 rounded-lg
-}
 
 </style>
