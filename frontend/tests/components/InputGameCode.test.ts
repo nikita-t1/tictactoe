@@ -1,7 +1,7 @@
 import {mount} from '@vue/test-utils'
 import InputGameCode from "../../src/components/InputGameCode.vue";
 import {afterAll, beforeAll, describe, expect, it} from "vitest";
-import {useWebSocketStore} from "../../src/stores/websocketStore";
+import {useWebSocketStore} from "../../src/stores/useMultiplayerWebsocketStore";
 import {backendServerMock, options} from "../globalMocks";
 import {Server} from "mock-socket";
 
