@@ -92,6 +92,7 @@ const mode = useColorMode({
 
 // is used in the Cross and Circle components
 const isPepe = useStorage('isPepe', false) // returns Ref<boolean>
+isPepe.value = false
 function pepe(){
     console.log("pepe")
     isPepe.value = false
