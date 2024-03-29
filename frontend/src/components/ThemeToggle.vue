@@ -15,31 +15,14 @@
             <div class="drawer-side">
                 <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
                 <div class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                    <div class="divider">{{t("selected_theme")}}</div>
+                    <p class="w-full my-1">
+                        <ThemePreviewCard class="" :theme="mode" @setTheme="null"/>
+                    </p>
+                    <div class="divider">{{ t("all_themes")}}</div>
                     <!-- Sidebar content here -->
                     <p v-for="theme in themes" :key="theme" class="w-full my-1">
-                        <button
-                            @click="setTheme(theme)"
-                            class="outline-base-content text-start outline-offset-4 w-full"
-                            data-set-theme={theme}
-                            data-act-class="[&_svg]:visible">
-                          <span
-                              :data-theme=theme
-                              class="bg-base-100 rounded-btn text-base-content block cursor-pointer font-sans">
-                            <span class="grid grid-cols-5 grid-rows-3">
-                              <span class="col-span-5 row-span-3 row-start-1 flex items-center gap-2 px-4 py-3">
-                                <span class="flex-grow text-sm">
-                                  {{ theme }}
-                                </span>
-                                <span class="flex h-full shrink-0 flex-wrap gap-1">
-                                  <span class="bg-primary rounded-badge w-2"/>
-                                  <span class="bg-secondary rounded-badge w-2"/>
-                                  <span class="bg-accent rounded-badge w-2"/>
-                                  <span class="bg-neutral rounded-badge w-2"/>
-                                </span>
-                              </span>
-                            </span>
-                          </span>
-                        </button>
+                        <ThemePreviewCard :theme="theme" @setTheme="setTheme"/>
                     </p>
                 </div>
             </div>
@@ -49,6 +32,10 @@
 
 <script setup lang="ts">
 import {useColorMode, useStorage} from '@vueuse/core'
+import ThemePreviewCard from "@/components/ThemePreviewCard.vue";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n()
 
 const themes = [
     "light",
@@ -110,7 +97,9 @@ function pepe(){
 function setTheme(theme: string) {
     // @ts-ignore
     mode.value = theme
-    document.documentElement.setAttribute('data-theme', theme)
+    console.log("setTheme", theme)
+    console.log("mode.value", mode.value)
+    // document.documentElement.setAttribute('data-theme', theme)
 }
 
 </script>

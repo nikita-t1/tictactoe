@@ -39,6 +39,8 @@
   "opponent_requested_rematch": "Gegner hat Revanche angefordert",
   "request_rematch": "Revanche",
 
+  "selected_theme": "Ausgewähltes Design",
+  "all_themes": "Alle Designs",
 
   "ws_msg": {
     "4000": "STATUS_OK",
