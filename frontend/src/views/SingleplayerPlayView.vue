@@ -5,7 +5,7 @@
                    @player-move="(index) => gameStore.playerMove(index)"/>
 
         <!-- Status message -->
-        <div class=" w-96 mt-4 p-2 text-center bg-base-100">
+        <div class="w-80 md:w-96 mt-4 p-2 text-center bg-base-100">
             {{ t(userMessage) }}
         </div>
 

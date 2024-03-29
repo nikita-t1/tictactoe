@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card bg-base-200 flex flex-col w-96 h-80">
+        <div class="card bg-base-200 flex flex-col w-80 md:w-96 h-80">
             <div class="flex grow flex-col p-4 md:p-5 card-body">
                 <h3 class="flex-none text-lg font-bold">
                     {{ t("player") }} 2

@@ -11,7 +11,7 @@
             <div class="p-4 md:p-5">
 
                 <div
-                    class="rounded-box bg-base-200 min-h-[14rem] flex flex-col w-96 md:w-[50rem] border p-4 md:p-5 border-base-300">
+                    class="rounded-box bg-base-200 min-h-[14rem] flex flex-col lg:w-[50rem] md:w-[42rem] sm:w-[28rem] w-[18rem] border p-4 md:p-5 border-base-300">
                   <span class="text-md font-semibold">
                       {{ t("play_vs_computer") }}
                   </span>
@@ -35,7 +35,7 @@
             <div class="p-4 md:p-5 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
 
                 <!-- Player 1 -->
-                <div class="rounded-box bg-base-200 min-h-[14rem] flex flex-col w-96 border p-4 md:p-5 border-base-300">
+                <div class="rounded-box bg-base-200 min-h-[14rem] flex flex-col lg:w-[24rem] md:w-[20rem] sm:w-[28rem] w-[18rem] border p-4 md:p-5 border-base-300">
                   <span class="text-md font-semibold">
                       {{ t("player") }} 1
                   </span>
@@ -50,7 +50,7 @@
                 </div>
 
                 <!-- Player 2 -->
-                <div class="rounded-box bg-base-200 min-h-[14rem] flex flex-col w-96 border p-4 md:p-5 border-base-300">
+                <div class="rounded-box bg-base-200 min-h-[14rem] flex flex-col lg:w-[24rem] md:w-[20rem] sm:w-[28rem] w-[18rem] border p-4 md:p-5 border-base-300">
                   <span class="text-md font-semibold">
                       {{ t("player") }} 2
                   </span>

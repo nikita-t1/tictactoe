@@ -1,8 +1,8 @@
 <template>
     <div class="max-w-[50rem] flex flex-col justify-center mx-auto w-full">
 
-        <div class="text-center py-10 px-4 sm:px-6 lg:px-8">
-            <div class="flex text-center justify-center items-center gap-10">
+        <div class="rounded-box text-center py-10 px-4 sm:px-6 lg:px-8 bg-base-100">
+            <div class="flex flex-col md:flex-row text-center justify-center items-center gap-10">
                 <IconLogo class="h-20 w-auto"/>
                 <h1 class="h-12 text-6xl font-bold">TicTacToe</h1>
             </div>

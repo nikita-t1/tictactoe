@@ -5,7 +5,7 @@
         <GameBoard :gameBoard="gameBoard" :awaiting-move-by="awaitingMoveBy"
                    @player-move="(index) => playerMove(index)"/>
 
-        <div class="w-96 mt-4 p-2 text-center">
+        <div class="w-80 md:w-96 mt-4 p-2 text-center">
         <span :class="currentStatusCode != null ? 'visible opacity-100' : 'invisible opacity-0'">
             {{ t(userMessage) }}
          </span>

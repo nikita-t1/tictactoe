@@ -12,6 +12,10 @@ import NavBar from "@/components/NavBar.vue";
   </div>
 </template>
 
-<style scoped>
+<style>
+
+* {
+    @apply transition-all duration-700
+}
 
 </style>
