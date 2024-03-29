@@ -39,6 +39,9 @@
   "opponent_requested_rematch": "Opponent requested a Rematch",
   "request_rematch": "Request Rematch",
 
+  "selected_theme": "Selected Theme",
+  "all_themes": "All Themes",
+
   "ws_msg": {
     "4000": "STATUS_OK",
     "4001": "GAME_BOARD",
