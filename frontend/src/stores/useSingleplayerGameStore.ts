@@ -85,15 +85,15 @@ export const useSingleplayerGameStore = defineStore('singleplayerGameStore', () 
      * Updates the status code and triggers the next move.
      */
     function handleGameBoardChange() {
-        if (checkDraw(gameBoardFields.value)) {
-            userMessage.value = 'game_draw'
+        const winner = checkWinner(gameBoardFields.value)
+        if (winner !== EMPTY_BOARD_FIELD) {
+            userMessage.value = (winner === MOVE_BY_PLAYER ? 'you_won' : 'you_lost')
             hasGameEnded.value = true
             return
         }
 
-        const winner = checkWinner(gameBoardFields.value)
-        if (winner !== EMPTY_BOARD_FIELD) {
-            userMessage.value = (winner === MOVE_BY_PLAYER ? 'you_won' : 'you_lost')
+        if (checkDraw(gameBoardFields.value)) {
+            userMessage.value = 'game_draw'
             hasGameEnded.value = true
             return
         }
