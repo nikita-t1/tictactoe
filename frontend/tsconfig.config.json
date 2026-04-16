@@ -1,7 +1,8 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.node.json",
+  "extends": "@vue/tsconfig/tsconfig.json",
   "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*"],
   "compilerOptions": {
+    "noEmit": true, // Do not emit outputs. Vite handles compilation, TS is only for type-checking.
     "composite": true,
     "types": ["node"]
   }
