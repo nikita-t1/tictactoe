@@ -19,9 +19,9 @@
                     </router-link>
 
                     <div class="">
-                        <select v-model="$i18n.locale" class="py-3 px-3 pr-4 block w-full rounded-md text-sm bg-base-100 border-base-200 border-2">
-                            <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">
-                                {{ locale }}
+                        <select v-model="locale" class="py-3 px-3 pr-4 block w-full rounded-md text-sm bg-base-100 border-base-200 border-2">
+                            <option v-for="l in availableLocales" :key="`locale-${l}`" :value="l">
+                                {{ l }}
                             </option>
                         </select>
                     </div>
@@ -37,7 +37,7 @@ import MaterialSymbolsHomeOutlineRounded from '~icons/material-symbols/home-outl
 import UilCommentInfoAlt from '~icons/uil/comment-info-alt'
 import {useI18n} from "vue-i18n";
 
-const {t} = useI18n()
+const {t, locale, availableLocales} = useI18n()
 
 
 </script>

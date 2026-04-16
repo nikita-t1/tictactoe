@@ -1,5 +1,6 @@
 <template>
     <button
+        type="button"
         @click="setTheme(props.theme)"
         class="outline-base-content text-start outline-offset-4 w-full"
         data-set-theme={theme}

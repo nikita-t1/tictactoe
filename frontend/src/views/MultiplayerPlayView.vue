@@ -51,7 +51,7 @@ const router = useRouter()
 
 const webSocketStore = useWebSocketStore()
 const {ws,gameCode, gameBoard, hasGameEnded, isMyMove, rematchText, currentStatusCode,userMessage} = storeToRefs(webSocketStore)
-const awaitingMoveBy = computed(() => isMyMove ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
+const awaitingMoveBy = computed(() => isMyMove.value ? MOVE_BY_PLAYER : MOVE_BY_OPPONENT)
 
 /**
  * Change the URL if the gameCode changes

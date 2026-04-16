@@ -15,10 +15,10 @@
                             </svg>
                     </span>
                     <h3 class="mb-2 text-2xl font-bold">
-                        {{ $t("opponent_disconnected") }}
+                        {{ t("opponent_disconnected") }}
                     </h3>
                     <p class="">
-                        {{ $t("opponent_disconnected_desc") }}
+                        {{ t("opponent_disconnected_desc") }}
                     </p>
                 </div>
 
